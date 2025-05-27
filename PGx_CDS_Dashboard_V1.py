@@ -366,21 +366,22 @@ def create_pdf_report(
     pdf.set_font("Arial", size=12)
 
     pdf.ln(5)
+    
     pdf.cell(0, 10, remove_non_ascii("Medications Assessed:"), ln=1)
     for med in active_meds:
         pdf.cell(0, 8, remove_non_ascii(f"- {med}"), ln=1)
     pdf.ln(3)
     pdf.cell(0, 10, remove_non_ascii("Gene Metabolism Table:"), ln=1)
-pdf.set_font("Arial", size=10)
-col_widths = [30, 35, 40, 60]  # adjust widths as needed
+    pdf.set_font("Arial", size=10)
+    col_widths = [30, 35, 40, 60]  # adjust widths as needed
 
-# Header
-pdf.cell(col_widths[0], 8, remove_non_ascii("Gene"), 1, 0)
-pdf.cell(col_widths[1], 8, remove_non_ascii("Genotype Phenotype"), 1, 0)
-pdf.cell(col_widths[2], 8, remove_non_ascii("Functional Phenotype"), 1, 0)
-pdf.cell(col_widths[3], 8, remove_non_ascii("Caused by"), 1, 1)
+    # Header
+    pdf.cell(col_widths[0], 8, remove_non_ascii("Gene"), 1, 0)
+    pdf.cell(col_widths[1], 8, remove_non_ascii("Genotype Phenotype"), 1, 0)
+    pdf.cell(col_widths[2], 8, remove_non_ascii("Functional Phenotype"), 1, 0)
+    pdf.cell(col_widths[3], 8, remove_non_ascii("Caused by"), 1, 1)
 
-# Data rows
+    # Data rows
 for gene in gene_state:
     genotype = gene_state[gene]["genotype"]
     func = gene_state[gene]["functional"]
