@@ -382,7 +382,7 @@ def create_pdf_report(
     pdf.cell(col_widths[3], 8, remove_non_ascii("Caused by"), 1, 1)
 
     # Data rows
-for gene in gene_state:
+    for gene in gene_state:
     genotype = gene_state[gene]["genotype"]
     func = gene_state[gene]["functional"]
     caused_by = ", ".join(gene_state[gene]["caused_by"])
