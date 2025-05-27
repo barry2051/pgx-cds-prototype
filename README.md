@@ -62,4 +62,4 @@ Let’s build clinical tools that actually make a difference.
 Built in partnership with advanced AI (GPT-4/4.1), but every line and logic choice reflects a nursing lens.
 
 Barry Ohearn
-RN, MN-Informatics Candidate, WGU (2025)
+RN, MSN-Informatics Candidate, WGU (2025)
