@@ -291,11 +291,7 @@ def parse_pdf(file):
         if page.extract_text():
             text += page.extract_text()
     return text
-    
-def remove_non_ascii(text):
-    """Removes any non-ASCII (emoji/unicode) characters from a string for PDF output."""
-    return ''.join(c for c in str(text) if ord(c) < 128)
-    
+
 def extract_genes_from_text(text):
     genes = []
     lines = text.splitlines()
@@ -352,63 +348,47 @@ def phenoconvert_genes(genes, meds, log):
         functional_genes.append((gene, info["functional"]))
     return functional_genes, gene_state
 
-def create_pdf_report(
-    filename, genes, functional_genes, gene_state, active_meds, 
-    recommendations, polypharmacy_warnings, flowsheet_all, phenolog, smartnote_lines
-):
+def create_pdf_report(filename, genes, functional_genes, gene_state, active_meds, recommendations, polypharmacy_warnings, flowsheet_all, phenolog, smartnote_lines):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
-    pdf.cell(0, 10, remove_non_ascii("PGx-Guided Behavioral Health CDS Report"), ln=1, align='C')
+    pdf.cell(0, 10, "PGx-Guided Behavioral Health CDS Report", ln=1, align='C')
     pdf.set_font("Arial", style="I", size=9)
-    pdf.cell(0, 8, remove_non_ascii("Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025)"), ln=1, align='C')
     pdf.set_font("Arial", size=12)
 
     pdf.ln(5)
-    
-    pdf.cell(0, 10, remove_non_ascii("Medications Assessed:"), ln=1)
+    pdf.cell(0, 10, "Medications Assessed:", ln=1)
     for med in active_meds:
-        pdf.cell(0, 8, remove_non_ascii(f"- {med}"), ln=1)
+        pdf.cell(0, 8, f"- {med}", ln=1)
     pdf.ln(3)
-    pdf.cell(0, 10, remove_non_ascii("Gene Metabolism Table:"), ln=1)
+    pdf.cell(0, 10, "Gene Metabolism Table:", ln=1)
     pdf.set_font("Arial", size=10)
-    col_widths = [30, 35, 40, 60]  # adjust widths as needed
-
-    # Header
-    pdf.cell(col_widths[0], 8, remove_non_ascii("Gene"), 1, 0)
-    pdf.cell(col_widths[1], 8, remove_non_ascii("Genotype Phenotype"), 1, 0)
-    pdf.cell(col_widths[2], 8, remove_non_ascii("Functional Phenotype"), 1, 0)
-    pdf.cell(col_widths[3], 8, remove_non_ascii("Caused by"), 1, 1)
-
-    # Data rows
+    pdf.cell(0, 8, "Gene    Genotype Phenotype   Functional Phenotype   Caused by", ln=1)
     for gene in gene_state:
-    genotype = gene_state[gene]["genotype"]
-    func = gene_state[gene]["functional"]
-    caused_by = ", ".join(gene_state[gene]["caused_by"])
-    pdf.cell(col_widths[0], 8, remove_non_ascii(str(gene)), 1, 0)
-    pdf.cell(col_widths[1], 8, remove_non_ascii(str(genotype)), 1, 0)
-    pdf.cell(col_widths[2], 8, remove_non_ascii(str(func)), 1, 0)
-    pdf.cell(col_widths[3], 8, remove_non_ascii(str(caused_by)), 1, 1)
-
+        genotype = gene_state[gene]["genotype"]
+        func = gene_state[gene]["functional"]
+        caused_by = ", ".join(gene_state[gene]["caused_by"])
+        line = f"{gene:8} {genotype:18} {func:20} {caused_by}"
+        pdf.cell(0, 8, line, ln=1)
     pdf.set_font("Arial", size=12)
     pdf.ln(2)
-    pdf.cell(0, 10, remove_non_ascii("Recommendations & Risks:"), ln=1)
+    pdf.cell(0, 10, "Recommendations & Risks:", ln=1)
     for _, rec_string, rec in recommendations:
-        pdf.multi_cell(0, 8, remove_non_ascii(f"{rec_string}: {rec}"))
+        pdf.multi_cell(0, 8, f"{rec_string}: {rec}")
     if polypharmacy_warnings:
-        pdf.cell(0, 10, remove_non_ascii("Polypharmacy Warnings:"), ln=1)
+        pdf.cell(0, 10, "Polypharmacy Warnings:", ln=1)
         for warning in polypharmacy_warnings:
-            pdf.multi_cell(0, 8, remove_non_ascii(warning))
-    pdf.cell(0, 10, remove_non_ascii("Flowsheet Prompts:"), ln=1)
+            pdf.multi_cell(0, 8, warning)
+    pdf.cell(0, 10, "Flowsheet Prompts:", ln=1)
     for prompt in flowsheet_all:
-        pdf.multi_cell(0, 8, remove_non_ascii(prompt))
-    pdf.cell(0, 10, remove_non_ascii("Phenoconversion Log:"), ln=1)
+        pdf.multi_cell(0, 8, prompt)
+    pdf.cell(0, 10, "Phenoconversion Log:", ln=1)
     for log in phenolog:
-        pdf.multi_cell(0, 8, remove_non_ascii(log))
-    pdf.cell(0, 10, remove_non_ascii("Provider Smart Note:"), ln=1)
+        pdf.multi_cell(0, 8, log)
+    pdf.cell(0, 10, "Provider Smart Note:", ln=1)
     for line in smartnote_lines:
-        pdf.multi_cell(0, 8, remove_non_ascii(line))
+        pdf.multi_cell(0, 8, line)
     pdf.output(filename)
 
 # ----------------------- Streamlit UI -----------------------
@@ -428,7 +408,7 @@ st.markdown(
 with st.sidebar:
     st.title("🩺 PGx CDS Dashboard")
     st.markdown(
-        "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support.")
+        "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support. Powered by Nursing Informatics.")
     uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
 
     selected_meds = st.multiselect(
@@ -448,7 +428,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("**Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
+    st.markdown("**Work in Process by Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
     st.markdown("_Precision support for behavioral health medication management_")
 
 st.markdown("# 🧬 PGx-Informed CDS Clinical Dashboard")
