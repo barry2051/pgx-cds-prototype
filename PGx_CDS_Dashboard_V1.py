@@ -429,7 +429,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("**Built in partnership with Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
+    st.markdown("**Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
     st.markdown("_Precision support for behavioral health medication management_")
 
 st.markdown("# 🧬 PGx-Informed CDS Clinical Dashboard")
