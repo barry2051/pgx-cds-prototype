@@ -371,14 +371,25 @@ def create_pdf_report(
         pdf.cell(0, 8, remove_non_ascii(f"- {med}"), ln=1)
     pdf.ln(3)
     pdf.cell(0, 10, remove_non_ascii("Gene Metabolism Table:"), ln=1)
-    pdf.set_font("Arial", size=10)
-    pdf.cell(0, 8, remove_non_ascii("Gene    Genotype Phenotype   Functional Phenotype   Caused by"), ln=1)
-    for gene in gene_state:
-        genotype = gene_state[gene]["genotype"]
-        func = gene_state[gene]["functional"]
-        caused_by = ", ".join(gene_state[gene]["caused_by"])
-        line = f"{gene:8} {genotype:18} {func:20} {caused_by}"
-        pdf.cell(0, 8, remove_non_ascii(line), ln=1)
+pdf.set_font("Arial", size=10)
+col_widths = [30, 35, 40, 60]  # adjust widths as needed
+
+# Header
+pdf.cell(col_widths[0], 8, remove_non_ascii("Gene"), 1, 0)
+pdf.cell(col_widths[1], 8, remove_non_ascii("Genotype Phenotype"), 1, 0)
+pdf.cell(col_widths[2], 8, remove_non_ascii("Functional Phenotype"), 1, 0)
+pdf.cell(col_widths[3], 8, remove_non_ascii("Caused by"), 1, 1)
+
+# Data rows
+for gene in gene_state:
+    genotype = gene_state[gene]["genotype"]
+    func = gene_state[gene]["functional"]
+    caused_by = ", ".join(gene_state[gene]["caused_by"])
+    pdf.cell(col_widths[0], 8, remove_non_ascii(str(gene)), 1, 0)
+    pdf.cell(col_widths[1], 8, remove_non_ascii(str(genotype)), 1, 0)
+    pdf.cell(col_widths[2], 8, remove_non_ascii(str(func)), 1, 0)
+    pdf.cell(col_widths[3], 8, remove_non_ascii(str(caused_by)), 1, 1)
+
     pdf.set_font("Arial", size=12)
     pdf.ln(2)
     pdf.cell(0, 10, remove_non_ascii("Recommendations & Risks:"), ln=1)
