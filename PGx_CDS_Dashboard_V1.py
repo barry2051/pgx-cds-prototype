@@ -362,7 +362,7 @@ def create_pdf_report(
 
     pdf.cell(0, 10, remove_non_ascii("PGx-Guided Behavioral Health CDS Report"), ln=1, align='C')
     pdf.set_font("Arial", style="I", size=9)
-    pdf.cell(0, 8, remove_non_ascii("Built in partnership with Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025)"), ln=1, align='C')
+    pdf.cell(0, 8, remove_non_ascii("Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025)"), ln=1, align='C')
     pdf.set_font("Arial", size=12)
 
     pdf.ln(5)
