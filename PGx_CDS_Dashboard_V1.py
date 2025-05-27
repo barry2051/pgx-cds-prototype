@@ -409,7 +409,7 @@ st.markdown(
 with st.sidebar:
     st.title("🩺 PGx CDS Dashboard")
     st.markdown(
-        "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support. Powered by Nursing Informatics.")
+        "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support.")
     uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
 
     selected_meds = st.multiselect(
