@@ -111,6 +111,35 @@ for med in ALL_MEDS:
     gen, disp = normalize_med_name(med)
     if disp not in ALL_MEDS_DISPLAY:
         ALL_MEDS_DISPLAY.append(disp)
+# ----------------------- Drug Class Mapping -----------------------
+DRUG_CLASSES = {
+    # Antipsychotics
+    "aripiprazole": "Antipsychotic",
+    "risperidone": "Antipsychotic",
+    "olanzapine": "Antipsychotic",
+    "quetiapine": "Antipsychotic",
+    "ziprasidone": "Antipsychotic",
+    "haloperidol": "Antipsychotic",
+    # SSRIs
+    "escitalopram": "SSRI",
+    "citalopram": "SSRI",
+    "paroxetine": "SSRI",
+    "fluoxetine": "SSRI",
+    "sertraline": "SSRI",
+    # SNRIs
+    "venlafaxine": "SNRI",
+    "duloxetine": "SNRI",
+    # Mood stabilizers
+    "lamotrigine": "Mood stabilizer",
+    "carbamazepine": "Mood stabilizer",
+    "valproate": "Mood stabilizer",
+    # Anxiolytics/Sedatives
+    "clonazepam": "Benzodiazepine",
+    "lorazepam": "Benzodiazepine",
+    "zolpidem": "Sedative/Hypnotic",
+    "buspirone": "Anxiolytic",
+    # Add others as needed
+}
 # ----------------------- Phenoconversion Inhibitors/Inducers -----------------------
 PHENOCONVERT = {
     "CYP2D6": {
@@ -463,6 +492,17 @@ if uploaded_file and selected_meds:
     active_meds_norm = list(meds_mapped.keys())
     active_meds_disp = list(meds_mapped.values())
 
+    from collections import defaultdict
+
+    # --- Class-based Polypharmacy Logic ---
+    class_counter = defaultdict(list)
+    for med in active_meds_norm:
+        drug_class = DRUG_CLASSES.get(med)
+        if drug_class:
+            class_counter[drug_class].append(med)
+
+    class_polypharmacy = {cls: meds for cls, meds in class_counter.items() if len(meds) > 1}
+
     # ----- Phenoconversion -----
     phenolog = []
     functional_genes, gene_state = phenoconvert_genes(genes, active_meds_norm, phenolog)
@@ -548,6 +588,16 @@ if uploaded_file and selected_meds:
         if polypharmacy_warnings:
             for warning in polypharmacy_warnings:
                 st.warning(warning)
+       
+        # --- Class-based polypharmacy alerts ---
+        if class_polypharmacy:
+            for cls, meds in class_polypharmacy.items():
+                med_names = [DISPLAY_NAME.get(m, m.capitalize()) for m in meds]
+                st.warning(
+                    f"⚠️ Multiple {cls}s selected: {', '.join(med_names)}. "
+                    "Increased risk of additive side effects, interactions, and toxicity. "
+                    "Review the combination carefully."
+            )        
         with st.expander("📋 Dynamic Flowsheet Prompts"):
             flowsheet_all = set()
             for gene, phenotype in functional_genes:
