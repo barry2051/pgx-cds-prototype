@@ -445,10 +445,10 @@ with st.sidebar:
         key="selected_meds"
     )
 
-    symptom = st.selectbox(
-        "Observed Symptom",
-        ["None", "tremor", "agitation", "sedation", "QT prolongation", "toxicity", "orthostatic hypotension"]
-    )
+symptom = st.selectbox(
+    "Observed Symptom",
+    ["None", "tremor", "agitation", "sedation", "QT prolongation", "toxicity", "orthostatic hypotension"]
+)
 
     st.markdown("---")
     st.markdown("**Work in Process by Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
