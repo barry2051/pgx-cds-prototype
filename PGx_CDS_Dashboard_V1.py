@@ -243,7 +243,7 @@ CLINICAL_COMMENTS = {
 
     ("CYP2D6", "Poor Metabolizer", "haloperidol"):
         "Reduced CYP2D6 function decreases haloperidol metabolism, which can lead to higher blood levels and increased risk of EPS, neurotoxicity, or cardiac adverse events. Careful monitoring or dose adjustment is recommended. "
-        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Haloperidol](https://www.pharmgkb.org/chemical/PA449225).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Haloperidol](https://www.pharmgkb.org/chemical/PA449841).",
 
     ("CYP3A4", "Decreased Function", "quetiapine"):
         "Quetiapine is primarily metabolized by CYP3A4. Decreased function can lead to elevated quetiapine concentrations, increasing sedation, orthostatic hypotension, and risk of toxicity. Dose reduction may be needed. "
