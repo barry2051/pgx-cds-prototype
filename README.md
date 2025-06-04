@@ -63,3 +63,7 @@ Built in partnership with advanced AI (GPT-4/4.1), but every line and logic choi
 
 Barry Ohearn
 RN, MSN-Informatics Candidate, WGU (2025)
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
