@@ -213,6 +213,8 @@ CLINICAL_COMMENTS = {
         "Ultra-rapid CYP1A2 metabolism increases olanzapine clearance, potentially resulting in subtherapeutic levels and decreased efficacy, especially in smokers. Consider higher doses or alternate agents.",
     ("CYP1A2", "Ultra-rapid Metabolizer", "clozapine"):
         "Ultra-rapid metabolism leads to low clozapine levels, risking therapeutic failure. Monitor response and consider dose adjustment.",
+    ("CYP3A4", "Decreased Function", "ziprasidone"):
+        "Ziprasidone is primarily metabolized by CYP3A4, but there are currently no actionable pharmacogenomic recommendations. Standard care applies.",
 
     # --- SSRIs/SNRIs ---
     ("CYP2C19", "Ultra-rapid Metabolizer", "citalopram"):
@@ -247,6 +249,16 @@ CLINICAL_COMMENTS = {
         "Poor metabolism of diazepam leads to drug accumulation, prolonging sedation and increasing risk of adverse effects.",
     ("CYP3A4", "Decreased Function", "zolpidem"):
         "Zolpidem is cleared by CYP3A4. Decreased function can result in prolonged sedation and next-day drowsiness. Lower doses or alternate sleep aids may be needed.",
+    ("CYP2D6", "Poor Metabolizer", "buspirone"):
+        "Buspirone: No clinically significant pharmacogenomic drug-gene interactions have been established. Standard dosing and monitoring apply.",
+    ("CYP3A4", "Decreased Function", "buspirone"):
+        "Buspirone: While metabolized by CYP3A4, no actionable gene-drug interactions are established in clinical guidelines.",
+    ("CYP3A4", "Decreased Function", "clonazepam"):
+        "Clonazepam: CYP3A4 plays a role in metabolism, but no clinically actionable PGx recommendations are currently available.",
+    ("UGT1A4", "Poor Metabolizer", "clonazepam"):
+        "Clonazepam: Glucuronidation is the major metabolic pathway, but current evidence does not support actionable pharmacogenomic guidance.",
+    ("UGT2B7", "Poor Metabolizer", "lorazepam"):
+        "Lorazepam is metabolized by glucuronidation (UGT2B7). No clinically significant pharmacogenomic effects have been reported. Use standard dosing and monitoring.",
 
     # --- Transporter/Pharmacodynamic Markers ---
     ("HTR2A", "A/A", "sertraline"):
@@ -277,6 +289,10 @@ PRIOR_RISKS = {
     "diazepam": 0.04,
     "zolpidem": 0.03,
     "bupropion": 0.05,
+    "buspirone": 0.02,
+    "ziprasidone": 0.06,
+    "clonazepam": 0.05,
+    "lorazepam": 0.04,
 }
 
 
