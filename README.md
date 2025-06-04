@@ -43,10 +43,7 @@ Install Python 3.9+ and the requirements (pip install -r requirements.txt)
 
 Run the app:
 
-arduino
-Copy
-Edit
-streamlit run <your_script_name.py>
+streamlit run PGx_CDS_Dashboard_V1.py
 Upload a PGx report (PDF or TXT) and select medications to get started.
 
 Next Steps
