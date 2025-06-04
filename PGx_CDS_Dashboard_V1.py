@@ -418,7 +418,7 @@ with st.sidebar:
     )
 
     if st.button("Clear All Medications"):
-        st.session_state.selected_meds = []
+        st.session_state["selected_meds"] = []
 
     # <-- Put the symptom selector OUTSIDE the clear button logic! -->
     symptom = st.selectbox(
