@@ -24,7 +24,7 @@ active psychiatric/behavioral health medications, and receive:
 
 HOW TO USE:
 1. Install Python 3.9+ and required packages (see requirements.txt).
-2. Launch the app using: streamlit run <this_script.py>
+2. Launch the app using: streamlit run PGx_CDS_Dashboard_V1.py
 3. Upload a sample PGx report (PDF or TXT).
 4. Select medications using the autocomplete field.
 5. Review the dashboard outputs for clinical insights and export options.
@@ -108,7 +108,6 @@ ALL_MEDS = sorted(set(list(MED_SYNONYMS.keys()) + list(MED_SYNONYMS.values())))
 # Show both brand and generic in dropdown options
 ALL_MEDS_DISPLAY = []
 for med in ALL_MEDS:
-    disp: object
     gen, disp = normalize_med_name(med)
     if disp not in ALL_MEDS_DISPLAY:
         ALL_MEDS_DISPLAY.append(disp)
