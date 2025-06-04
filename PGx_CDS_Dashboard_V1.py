@@ -416,7 +416,6 @@ with st.sidebar:
     selected_meds = st.multiselect(
         "Select Medications (type to search, select multiple):",
         options=ALL_MEDS_DISPLAY,
-        default=[],
         key="selected_meds"
     )
     # <-- Put the symptom selector OUTSIDE the clear button logic! -->
