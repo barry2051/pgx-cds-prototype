@@ -29,8 +29,8 @@ Flags overlapping metabolism and possible drug-drug interactions, with clear war
 Provider Smart Note
 Creates a structured summary for easy EHR charting or escalation.
 
-PDF and JSON Export
-One-click export of reports and all calculated logic for sharing or record-keeping.
+PDF, JSON, and FHIR Export
+One-click export of reports, a CDS logic snapshot, and a FHIR Bundle for interoperability.
 
 Why I Built This
 Informatics in behavioral health needs tools that actually work for nurses—simple to use, clinically meaningful, and transparent. Too often, CDS is either too rigid or too vague.
@@ -49,7 +49,7 @@ Upload a PGx report (PDF or TXT) and select medications to get started.
 Next Steps
 Tying risk calculations to published clinical evidence (CPIC, PharmGKB, cohort studies)
 
-Expanding FHIR/EHR interoperability for deployment in real-world systems
+Further FHIR/EHR interoperability for deployment in real-world systems (initial FHIR bundle export now available)
 
 Usability feedback from nurses and behavioral health clinicians
 
