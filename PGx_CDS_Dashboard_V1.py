@@ -2,7 +2,7 @@
 ===============================================================================
 PGx-Guided Behavioral Health CDS Dashboard – Prototype
 
-AUTHOR: Barry Ohearn, RN, MN-Informatics Candidate (WGU, 2025)
+AUTHOR: Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025)
 DATE: 5/27/25
 -------------------------------------------------------------------------------
 DISCLAIMER:
@@ -234,121 +234,121 @@ CLINICAL_COMMENTS = {
         "CYP2D6 Poor Metabolizer status reduces risperidone clearance, causing the drug to accumulate in the bloodstream. "
         "This increases the risk of extrapyramidal side effects (EPS), sedation, and toxicity. "
         "Consider lowering the dose or switching to a medication less dependent on CYP2D6 metabolism. "
-        "[CPIC Antipsychotics Guideline](https://cpicpgx.org/guidelines/guideline-for-antipsychotics/) | [PharmGKB Risperidone](https://www.pharmgkb.org/chemical/PA451906).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Risperidone](https://www.pharmgkb.org/chemical/PA451257).",
 
     ("CYP2D6", "Poor Metabolizer", "aripiprazole"):
         "Poor CYP2D6 metabolism slows aripiprazole clearance, raising blood concentrations and increasing risk of side effects such as akathisia, sedation, and QT prolongation. "
         "A dose reduction or alternative therapy may be appropriate. "
-        "[CPIC Antipsychotics Guideline](https://cpicpgx.org/guidelines/guideline-for-antipsychotics/) | [PharmGKB Aripiprazole](https://www.pharmgkb.org/chemical/PA449259).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Aripiprazole](https://www.pharmgkb.org/chemical/PA10026).",
 
     ("CYP2D6", "Poor Metabolizer", "haloperidol"):
         "Reduced CYP2D6 function decreases haloperidol metabolism, which can lead to higher blood levels and increased risk of EPS, neurotoxicity, or cardiac adverse events. Careful monitoring or dose adjustment is recommended. "
-        "[CPIC Antipsychotics Guideline](https://cpicpgx.org/guidelines/guideline-for-antipsychotics/) | [PharmGKB Haloperidol](https://www.pharmgkb.org/chemical/PA449225).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Haloperidol](https://www.pharmgkb.org/chemical/PA449225).",
 
     ("CYP3A4", "Decreased Function", "quetiapine"):
         "Quetiapine is primarily metabolized by CYP3A4. Decreased function can lead to elevated quetiapine concentrations, increasing sedation, orthostatic hypotension, and risk of toxicity. Dose reduction may be needed. "
-        "[CPIC Antipsychotics Guideline](https://cpicpgx.org/guidelines/guideline-for-antipsychotics/) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451938).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
 
     ("CYP1A2", "Ultra-rapid Metabolizer", "olanzapine"):
         "Ultra-rapid CYP1A2 metabolism increases olanzapine clearance, potentially resulting in subtherapeutic levels and decreased efficacy, especially in smokers. Consider higher doses or alternate agents. "
-        "[CPIC Antipsychotics Guideline](https://cpicpgx.org/guidelines/guideline-for-antipsychotics/) | [PharmGKB Olanzapine](https://www.pharmgkb.org/chemical/PA451989).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Olanzapine](https://www.pharmgkb.org/chemical/PA450688).",
 
     ("CYP1A2", "Ultra-rapid Metabolizer", "clozapine"):
         "Ultra-rapid metabolism leads to low clozapine levels, risking therapeutic failure. Monitor response and consider dose adjustment. "
-        "[CPIC Antipsychotics Guideline](https://cpicpgx.org/guidelines/guideline-for-antipsychotics/) | [PharmGKB Clozapine](https://www.pharmgkb.org/chemical/PA449316).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Clozapine](https://www.pharmgkb.org/chemical/PA449061).",
     
     ("CYP3A4", "Decreased Function", "ziprasidone"):
         "Ziprasidone is primarily metabolized by CYP3A4, but there are currently no actionable pharmacogenomic recommendations. Standard care applies. "
-        "[PharmGKB Ziprasidone](https://www.pharmgkb.org/chemical/PA451989).",
+        "[PharmGKB Ziprasidone](https://www.pharmgkb.org/chemical/PA451974).",
 
     # --- SSRIs/SNRIs ---
     ("CYP2C19", "Ultra-rapid Metabolizer", "citalopram"):
         "CYP2C19 ultra-rapid metabolism clears citalopram more quickly, which can result in subtherapeutic plasma concentrations and poor antidepressant response. "
         "Consider an SSRI less affected by CYP2C19 or increase the dose if clinically appropriate. "
-        "[CPIC Citalopram/Escitalopram Guideline](https://cpicpgx.org/guidelines/guideline-for-citalopram-and-escitalopram/) | [PharmGKB Citalopram](https://www.pharmgkb.org/chemical/PA449866).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Citalopram](https://www.pharmgkb.org/chemical/PA449015).",
 
     ("CYP2C19", "Poor Metabolizer", "citalopram"):
         "Poor CYP2C19 metabolism raises citalopram levels, increasing the risk of QT prolongation and other side effects. Dose reduction or close monitoring is recommended. "
-        "[CPIC Citalopram/Escitalopram Guideline](https://cpicpgx.org/guidelines/guideline-for-citalopram-and-escitalopram/) | [PharmGKB Citalopram](https://www.pharmgkb.org/chemical/PA449866).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Citalopram](https://www.pharmgkb.org/chemical/PA449015).",
 
     ("CYP2C19", "Ultra-rapid Metabolizer", "escitalopram"):
         "Faster metabolism of escitalopram may cause lower drug levels and reduced antidepressant effect. Monitor for lack of response. "
-        "[CPIC Citalopram/Escitalopram Guideline](https://cpicpgx.org/guidelines/guideline-for-citalopram-and-escitalopram/) | [PharmGKB Escitalopram](https://www.pharmgkb.org/chemical/PA165954195).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Escitalopram](https://www.pharmgkb.org/chemical/PA10074).",
 
     ("CYP2C19", "Poor Metabolizer", "escitalopram"):
         "Reduced metabolism raises escitalopram blood levels, increasing the risk of side effects, including QT prolongation. Consider lower doses or more frequent monitoring. "
-        "[CPIC Citalopram/Escitalopram Guideline](https://cpicpgx.org/guidelines/guideline-for-citalopram-and-escitalopram/) | [PharmGKB Escitalopram](https://www.pharmgkb.org/chemical/PA165954195).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Escitalopram](https://www.pharmgkb.org/chemical/PA10074).",
 
     ("CYP2D6", "Poor Metabolizer", "paroxetine"):
         "CYP2D6 Poor Metabolizer status leads to slow paroxetine clearance, resulting in drug accumulation and a higher risk of anticholinergic effects, sedation, and sexual dysfunction. Dose reduction or switching medications may be needed. "
-        "[CPIC SSRIs Guideline](https://cpicpgx.org/guidelines/guideline-for-selective-serotonin-reuptake-inhibitors-ssris/) | [PharmGKB Paroxetine](https://www.pharmgkb.org/chemical/PA451759).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Paroxetine](https://www.pharmgkb.org/chemical/PA450801).",
 
     ("CYP2D6", "Poor Metabolizer", "fluoxetine"):
         "Reduced CYP2D6 activity increases fluoxetine levels, elevating risk of side effects such as insomnia, GI upset, and serotonin syndrome. Monitor and consider dose reduction. "
-        "[CPIC SSRIs Guideline](https://cpicpgx.org/guidelines/guideline-for-selective-serotonin-reuptake-inhibitors-ssris/) | [PharmGKB Fluoxetine](https://www.pharmgkb.org/chemical/PA449058).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Fluoxetine](https://www.pharmgkb.org/chemical/PA449673).",
 
     ("CYP2D6", "Poor Metabolizer", "venlafaxine"):
         "Venlafaxine is metabolized to its active metabolite by CYP2D6. Poor metabolism may cause higher venlafaxine and lower active metabolite levels, leading to reduced efficacy and increased side effects. Adjust therapy as needed. "
-        "[CPIC SSRIs Guideline](https://cpicpgx.org/guidelines/guideline-for-selective-serotonin-reuptake-inhibitors-ssris/) | [PharmGKB Venlafaxine](https://www.pharmgkb.org/chemical/PA450533).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Venlafaxine](https://www.pharmgkb.org/chemical/PA451866).",
 
     ("CYP2D6", "Poor Metabolizer", "duloxetine"):
         "Slow CYP2D6 metabolism raises duloxetine concentrations, increasing the risk of side effects such as nausea, hypertension, and liver toxicity. Lower doses or alternative therapy may be appropriate. "
-        "[CPIC SSRIs Guideline](https://cpicpgx.org/guidelines/guideline-for-selective-serotonin-reuptake-inhibitors-ssris/) | [PharmGKB Duloxetine](https://www.pharmgkb.org/chemical/PA451247).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/cpic-guideline-for-ssri-and-snri-antidepressants/) | [PharmGKB Duloxetine](https://www.pharmgkb.org/chemical/PA10066).",
 
     # --- Mood Stabilizers/Other Psych ---
      ("CYP2C19", "Poor Metabolizer", "lamotrigine"):
         "Poor CYP2C19 metabolism may result in higher lamotrigine levels, which can increase the risk of rash and other adverse effects. Monitor closely. "
-        "[PharmGKB Lamotrigine](https://www.pharmgkb.org/chemical/PA450178).",
+        "[PharmGKB Lamotrigine](https://www.pharmgkb.org/chemical/PA450164).",
 
     ("CYP2C9", "Poor Metabolizer", "valproate"):
         "Valproate clearance is reduced in CYP2C9 poor metabolizers, raising blood levels and risk of toxicity, including liver damage and thrombocytopenia. Dose adjustment and monitoring recommended. "
-        "[PharmGKB Valproic Acid](https://www.pharmgkb.org/chemical/PA451304).",
+        "[PharmGKB Valproic Acid](https://www.pharmgkb.org/chemical/PA451846).",
 
     ("CYP2C19", "Ultra-rapid Metabolizer", "clobazam"):
         "Faster metabolism may result in lower clobazam levels, possibly reducing efficacy in seizure control or anxiety treatment. "
-        "[CPIC Clobazam Guideline](https://cpicpgx.org/guidelines/guideline-for-clobazam/) | [PharmGKB Clobazam](https://www.pharmgkb.org/chemical/PA449024).",
+        "[PharmGKB Clobazam](https://www.pharmgkb.org/chemical/PA10888).",
 
     # --- Anxiety/Sleep ---
     ("CYP3A4", "Decreased Function", "alprazolam"):
         "Decreased CYP3A4 activity leads to slower alprazolam metabolism, increasing sedation, confusion, and fall risk, especially in older adults. "
-        "[PharmGKB Alprazolam](https://www.pharmgkb.org/chemical/PA165378303).",
+        "[PharmGKB Alprazolam](https://www.pharmgkb.org/chemical/PA448333).",
 
     ("CYP2C19", "Poor Metabolizer", "diazepam"):
         "Poor metabolism of diazepam leads to drug accumulation, prolonging sedation and increasing risk of adverse effects. "
-        "[CPIC Diazepam Guideline](https://cpicpgx.org/guidelines/guideline-for-diazepam/) | [PharmGKB Diazepam](https://www.pharmgkb.org/chemical/PA449903).",
+        "[CPIC Guideline](https://cpicpgx.org/guidelines/) | [PharmGKB Diazepam](https://www.pharmgkb.org/chemical/PA449283).",
 
     ("CYP3A4", "Decreased Function", "zolpidem"):
         "Zolpidem is cleared by CYP3A4. Decreased function can result in prolonged sedation and next-day drowsiness. Lower doses or alternate sleep aids may be needed. "
-        "[PharmGKB Zolpidem](https://www.pharmgkb.org/chemical/PA451632).",
+        "[PharmGKB Zolpidem](https://www.pharmgkb.org/chemical/PA451976).",
     ("CYP2D6", "Poor Metabolizer", "buspirone"):
         "Buspirone: No clinically significant pharmacogenomic drug-gene interactions have been established. Standard dosing and monitoring apply. "
-        "[PharmGKB Buspirone](https://www.pharmgkb.org/chemical/PA449967).",
+        "[PharmGKB Buspirone](https://www.pharmgkb.org/chemical/PA448689).",
     ("CYP3A4", "Decreased Function", "buspirone"):
         "Buspirone: While metabolized by CYP3A4, no actionable gene-drug interactions are established in clinical guidelines. "
-        "[PharmGKB Buspirone](https://www.pharmgkb.org/chemical/PA449967).",
+        "[PharmGKB Buspirone](https://www.pharmgkb.org/chemical/PA448689).",
  ("CYP3A4", "Decreased Function", "clonazepam"):
         "Clonazepam: CYP3A4 plays a role in metabolism, but no clinically actionable PGx recommendations are currently available. "
-        "[PharmGKB Clonazepam](https://www.pharmgkb.org/chemical/PA449024).",
+        "[PharmGKB Clonazepam](https://www.pharmgkb.org/chemical/PA449050).",
 
     ("UGT1A4", "Poor Metabolizer", "clonazepam"):
         "Clonazepam: Glucuronidation is the major metabolic pathway, but current evidence does not support actionable pharmacogenomic guidance. "
-        "[PharmGKB Clonazepam](https://www.pharmgkb.org/chemical/PA449024).",
+        "[PharmGKB Clonazepam](https://www.pharmgkb.org/chemical/PA449050).",
 
     ("UGT2B7", "Poor Metabolizer", "lorazepam"):
         "Lorazepam is metabolized by glucuronidation (UGT2B7). No clinically significant pharmacogenomic effects have been reported. Use standard dosing and monitoring. "
-        "[PharmGKB Lorazepam](https://www.pharmgkb.org/chemical/PA449265).",
+        "[PharmGKB Lorazepam](https://www.pharmgkb.org/chemical/PA450267).",
     # --- Transporter/Pharmacodynamic Markers ---
     ("HTR2A", "A/A", "sertraline"):
         "HTR2A A/A genotype may reduce SSRI efficacy, possibly requiring dose escalation or alternative antidepressants. "
-        "[PharmGKB Sertraline](https://www.pharmgkb.org/chemical/PA451304).",
+        "[PharmGKB Sertraline](https://www.pharmgkb.org/chemical/PA451333).",
 
     ("SLC6A4", "S/S", "sertraline"):
         "S/S genotype of SLC6A4 (5-HTTLPR) is associated with poorer SSRI tolerance and reduced likelihood of response. Consider alternative therapy if ineffective or poorly tolerated. "
-        "[PharmGKB Sertraline](https://www.pharmgkb.org/chemical/PA451304).",
+        "[PharmGKB Sertraline](https://www.pharmgkb.org/chemical/PA451333).",
 
     ("COMT", "Val/Val", "bupropion"):
         "COMT Val/Val may increase dopamine breakdown, possibly reducing bupropion efficacy in treating depression or ADHD. Clinical significance varies. "
-        "[PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA451247).",
+        "[PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
 }
 PRIOR_RISKS = {
     "risperidone": 0.1,
