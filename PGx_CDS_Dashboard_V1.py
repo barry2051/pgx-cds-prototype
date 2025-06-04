@@ -413,11 +413,12 @@ with st.sidebar:
     selected_meds = st.multiselect(
         "Select Medications (type to search, select multiple):",
         options=ALL_MEDS_DISPLAY,
-        default=[]
+        default=[],
+        key="selected_meds"
     )
 
     if st.button("Clear All Medications"):
-        selected_meds.clear()
+        st.session_state.selected_meds = []
         st.experimental_rerun()
 
     # <-- Put the symptom selector OUTSIDE the clear button logic! -->
