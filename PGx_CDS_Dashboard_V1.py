@@ -39,6 +39,9 @@ from PyPDF2 import PdfReader
 import pandas as pd
 from fpdf import FPDF
 import tempfile
+from fhir.resources.bundle import Bundle
+from fhir.resources.observation import Observation
+from fhir.resources.medicationstatement import MedicationStatement
 
 # ----------------------- Brand/Generic Synonym Mapping -----------------------
 # Add new pairs as needed
@@ -390,6 +393,31 @@ def create_pdf_report(filename, genes, functional_genes, gene_state, active_meds
         pdf.multi_cell(0, 8, line)
     pdf.output(filename)
 
+def create_fhir_bundle(genes, medications, recommendations):
+    """Return a FHIR Bundle JSON for download."""
+    entries = []
+    for gene, phenotype in genes:
+        obs = Observation.model_construct()
+        obs.status = "final"
+        obs.code = {"text": f"{gene} phenotype"}
+        obs.valueString = phenotype
+        entries.append({"resource": obs})
+    for med in medications:
+        ms = MedicationStatement.model_construct()
+        ms.status = "active"
+        ms.medication = {"concept": {"text": med}}
+        entries.append({"resource": ms})
+    for _, rec_string, rec in recommendations:
+        note = Observation.model_construct()
+        note.status = "final"
+        note.code = {"text": rec_string}
+        note.note = [{"text": rec}]
+        entries.append({"resource": note})
+    bundle = Bundle.model_construct()
+    bundle.type = "collection"
+    bundle.entry = entries
+    return bundle
+
 # ----------------------- Streamlit UI -----------------------
 st.set_page_config(page_title="PGx CDS Dashboard", layout="wide")
 st.markdown(
@@ -572,6 +600,16 @@ if uploaded_file and selected_meds:
                     file_name="PGx_CDS_Report.pdf",
                     mime="application/pdf"
                 )
+
+    # ----- FHIR Bundle Export -----
+    if st.button("Download FHIR Bundle"):
+        bundle = create_fhir_bundle(functional_genes, active_meds_disp, recommendations)
+        st.download_button(
+            label="Click to Download FHIR JSON",
+            data=bundle.json(indent=2),
+            file_name="PGx_CDS_FHIR_Bundle.json",
+            mime="application/json"
+        )
 
     # ----- CDS Logic JSON -----
     with st.expander("Show CDS Logic Snapshot (JSON)"):
