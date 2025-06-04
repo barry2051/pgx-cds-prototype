@@ -37,11 +37,6 @@ For questions, suggestions, or collaboration, contact Barry Ohearn.
 import streamlit as st
 from PyPDF2 import PdfReader
 import pandas as pd
-from fpdf import FPDF
-import tempfile
-from fhir.resources.bundle import Bundle
-from fhir.resources.observation import Observation
-from fhir.resources.medicationstatement import MedicationStatement
 
 # ----------------------- Brand/Generic Synonym Mapping -----------------------
 # Add new pairs as needed
@@ -110,10 +105,6 @@ def normalize_med_name(med):
 ALL_MEDS = sorted(set(list(MED_SYNONYMS.keys()) + list(MED_SYNONYMS.values())))
 # Show both brand and generic in dropdown options
 ALL_MEDS_DISPLAY = []
-for med in ALL_MEDS:
-    gen, disp = normalize_med_name(med)
-    if disp not in ALL_MEDS_DISPLAY:
-        ALL_MEDS_DISPLAY.append(disp)
 # ----------------------- Phenoconversion Inhibitors/Inducers -----------------------
 PHENOCONVERT = {
     "CYP2D6": {
@@ -350,7 +341,6 @@ def phenoconvert_genes(genes, meds, log):
         functional_genes.append((gene, info["functional"]))
     return functional_genes, gene_state
 
-def create_pdf_report(filename, genes, functional_genes, gene_state, active_meds, recommendations, polypharmacy_warnings, flowsheet_all, phenolog, smartnote_lines):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -391,32 +381,6 @@ def create_pdf_report(filename, genes, functional_genes, gene_state, active_meds
     pdf.cell(0, 10, "Provider Smart Note:", ln=1)
     for line in smartnote_lines:
         pdf.multi_cell(0, 8, line)
-    pdf.output(filename)
-
-def create_fhir_bundle(genes, medications, recommendations):
-    """Return a FHIR Bundle JSON for download."""
-    entries = []
-    for gene, phenotype in genes:
-        obs = Observation.model_construct()
-        obs.status = "final"
-        obs.code = {"text": f"{gene} phenotype"}
-        obs.valueString = phenotype
-        entries.append({"resource": obs})
-    for med in medications:
-        ms = MedicationStatement.model_construct()
-        ms.status = "active"
-        ms.medication = {"concept": {"text": med}}
-        entries.append({"resource": ms})
-    for _, rec_string, rec in recommendations:
-        note = Observation.model_construct()
-        note.status = "final"
-        note.code = {"text": rec_string}
-        note.note = [{"text": rec}]
-        entries.append({"resource": note})
-    bundle = Bundle.model_construct()
-    bundle.type = "collection"
-    bundle.entry = entries
-    return bundle
 
 # ----------------------- Streamlit UI -----------------------
 st.set_page_config(page_title="PGx CDS Dashboard", layout="wide")
@@ -438,17 +402,7 @@ with st.sidebar:
         "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support. Powered by Nursing Informatics.")
     uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
 
-    selected_meds = st.multiselect(
-        "Select Medications (type to search, select multiple):",
-        options=ALL_MEDS_DISPLAY,
-        default=[],
-        key="selected_meds"
-    )
 
-symptom = st.selectbox(
-    "Observed Symptom",
-    ["None", "tremor", "agitation", "sedation", "QT prolongation", "toxicity", "orthostatic hypotension"]
-)
 
     st.markdown("---")
     st.markdown("**Work in Process by Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
@@ -556,6 +510,52 @@ if uploaded_file and selected_meds:
         else:
             st.info("No specific recommendations based on current rules.")
         if polypharmacy_warnings:
+            for warning in polypharmacy_warnings:
+                st.warning(warning)
+        with st.expander("📋 Dynamic Flowsheet Prompts"):
+            flowsheet_all = set()
+            for gene, phenotype in functional_genes:
+                for med in active_meds_norm:
+                    prompts = FLOWSHEET_PROMPTS.get((gene, phenotype, med), [])
+                    for prompt in prompts:
+                        flowsheet_all.add(f"{DISPLAY_NAME.get(med, med.capitalize())}: {prompt}")
+            if flowsheet_all:
+                for prompt in sorted(flowsheet_all):
+                    st.write(f"- {prompt}")
+            else:
+                st.write("No special prompts for these combinations.")
+        with st.expander("🧪 Phenoconversion Log"):
+            if phenolog:
+                for log in phenolog:
+                    st.write(f"- {log}")
+            else:
+                st.write("No phenotype adjustments by inhibitors/inducers.")
+
+    st.markdown("---")
+
+    st.subheader("📝 Provider Smart Note (Copy to Chart)")
+    if smartnote_lines:
+        st.code('\n'.join(smartnote_lines), language="markdown")
+    else:
+        st.info("No CDS findings to summarize.")
+
+    # ----- PDF Export -----
+
+    # ----- CDS Logic JSON -----
+    with st.expander("Show CDS Logic Snapshot (JSON)"):
+        st.json({
+            "genes": genes,
+            "medications": active_meds_disp,
+            "symptom": symptom,
+            "recommendations": [x[1] + ": " + x[2] for x in recommendations],
+            "polypharmacy_warnings": polypharmacy_warnings,
+            "flowsheet_prompts": list(flowsheet_all),
+            "phenoconversion_log": phenolog
+        })
+
+else:
+    st.info("Upload a PGx result and enter one or more active medications to begin.")
+
             for warning in polypharmacy_warnings:
                 st.warning(warning)
         with st.expander("📋 Dynamic Flowsheet Prompts"):
