@@ -409,17 +409,16 @@ with st.sidebar:
     st.markdown(
         "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support. Powered by Nursing Informatics.")
     uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
-
+  
+    if st.button("Clear All Medications"):
+        st.session_state.selected_meds = []
+    
     selected_meds = st.multiselect(
         "Select Medications (type to search, select multiple):",
         options=ALL_MEDS_DISPLAY,
         default=[],
         key="selected_meds"
     )
-
-    if st.button("Clear All Medications"):
-        st.session_state.selected_meds = []
-
     # <-- Put the symptom selector OUTSIDE the clear button logic! -->
     symptom = st.selectbox(
         "Observed Symptom",
