@@ -627,7 +627,7 @@ for gene in gene_state:
 pdf.set_font("Arial", size=12)
 
     # --- Recommendations & Risks ---
-    pdf.ln(2)
+pdf.ln(2)
     pdf.cell(0, 10, clean_text("Recommendations & Risks:"), ln=1)
     for _, rec_string, rec in recommendations:
         pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"), align='L')
