@@ -501,70 +501,31 @@ def parse_pdf(file):
     return text
 
 def extract_genes_from_text(text):
+    gene_panel = [
+        "CYP1A2", "CYP2B6", "CYP2C19", "CYP2C9", "CYP2D6",
+        "CYP3A4", "CYP3A5", "UGT1A4", "UGT2B15",
+        "HTR2A", "SLC6A4", "HLA-A*31:01", "HLA-B*15:02",
+        "MTHFR", "COMT"
+    ]
+    phenotype_keywords = [
+        "Normal Metabolizer", "Poor Metabolizer", "Intermediate Metabolizer",
+        "Ultra-rapid Metabolizer", "Decreased Function", "Increased Risk",
+        "Positive", "Negative", "Val/Val", "A/C", "C/T", "Short/Short", "Short", "Long"
+    ]
     genes = []
-    lines = text.splitlines()
-    for line in lines:
-        # CYP2D6
-        if 'CYP2D6' in line and 'Poor Metabolizer' in line:
-            genes.append(('CYP2D6', 'Poor Metabolizer'))
-        # CYP2C19
-        if 'CYP2C19' in line and 'Ultra-rapid Metabolizer' in line:
-            genes.append(('CYP2C19', 'Ultra-rapid Metabolizer'))
-        if 'CYP2C19' in line and 'Poor Metabolizer' in line:
-            genes.append(('CYP2C19', 'Poor Metabolizer'))
-        # CYP3A4
-        if 'CYP3A4' in line and ('Decreased Function' in line or 'Poor Metabolizer' in line):
-            genes.append(('CYP3A4', 'Decreased Function'))  # Standardize
-        # CYP1A2
-        if 'CYP1A2' in line and 'Ultra-rapid Metabolizer' in line:
-            genes.append(('CYP1A2', 'Ultra-rapid Metabolizer'))
-        # HTR2A
-        if 'HTR2A' in line and ('A/A' in line or 'Increased Risk' in line):
-            genes.append(('HTR2A', 'A/A'))  # Or 'Increased Risk' if that’s your standard
-        # SLC6A4
-        if 'SLC6A4' in line and ('S/S' in line or 'Poor Function' in line):
-            genes.append(('SLC6A4', 'S/S'))  # Or 'Poor Function'
-        # COMT
-        if 'COMT' in line and 'Val/Val' in line:
-            genes.append(('COMT', 'Val/Val'))
-        # CYP2C9
-        if 'CYP2C9' in line and 'Poor Metabolizer' in line:
-            genes.append(('CYP2C9', 'Poor Metabolizer'))
-        # CYP2B6
-        if 'CYP2B6' in line and 'Poor Metabolizer' in line:
-            genes.append(('CYP2B6', 'Poor Metabolizer'))
-        if 'CYP2B6' in line and 'Intermediate Metabolizer' in line:
-            genes.append(('CYP2B6', 'Intermediate Metabolizer'))
-        # CYP3A5
-        if 'CYP3A5' in line and 'Poor Metabolizer' in line:
-            genes.append(('CYP3A5', 'Poor Metabolizer'))
-        if 'CYP3A5' in line and 'Intermediate Metabolizer' in line:
-            genes.append(('CYP3A5', 'Intermediate Metabolizer'))
-        # UGT1A4
-        if 'UGT1A4' in line and 'Poor Metabolizer' in line:
-            genes.append(('UGT1A4', 'Poor Metabolizer'))
-        # UGT2B15
-        if 'UGT2B15' in line and 'Poor Metabolizer' in line:
-            genes.append(('UGT2B15', 'Poor Metabolizer'))
-        # HLA-A*31:01
-        if 'HLA-A*31:01' in line and 'Positive' in line:
-            genes.append(('HLA-A*31:01', 'Positive'))
-        if 'HLA-A*31:01' in line and 'Negative' in line:
-            genes.append(('HLA-A*31:01', 'Negative'))
-        # HLA-B*15:02
-        if 'HLA-B*15:02' in line and 'Positive' in line:
-            genes.append(('HLA-B*15:02', 'Positive'))
-        if 'HLA-B*15:02' in line and 'Negative' in line:
-            genes.append(('HLA-B*15:02', 'Negative'))
-        # MTHFR (look for common variants)
-        if 'MTHFR' in line and 'C/T' in line:
-            genes.append(('MTHFR', 'C/T'))
-        if 'MTHFR' in line and 'A/C' in line:
-            genes.append(('MTHFR', 'A/C'))
-        if 'MTHFR' in line and 'T/T' in line:
-            genes.append(('MTHFR', 'T/T'))
-        if 'MTHFR' in line and 'C/C' in line:
-            genes.append(('MTHFR', 'C/C'))
+    found_genes = set()
+    for gene in gene_panel:
+        for line in text.splitlines():
+            if gene in line:
+                for keyword in phenotype_keywords:
+                    if keyword in line:
+                        genes.append((gene, keyword))
+                        found_genes.add(gene)
+                        break
+    # Add Not Reported for any missing genes
+    for gene in gene_panel:
+        if gene not in found_genes:
+            genes.append((gene, "Not Reported"))
     return genes
 
 def phenoconvert_genes(genes, meds, log):
