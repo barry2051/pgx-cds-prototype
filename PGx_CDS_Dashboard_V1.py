@@ -572,6 +572,22 @@ from fpdf import FPDF
 def clean_text(text):
     return str(text).encode("latin-1", "replace").decode("latin-1")
 
+# Short-form for phenotypes
+phenotype_map = {
+    "Intermediate Metabolizer": "IM",
+    "Ultra-rapid Metabolizer": "UM",
+    "Poor Metabolizer": "PM",
+    "Normal Metabolizer": "NM",
+    "Decreased Function": "DF",
+    "Increased Risk": "IR",
+    "Val/Val": "Val/Val",
+    "Positive": "Pos",
+    "Negative": "Neg",
+    "Not Reported": "NR"
+}
+def short_pheno(pheno):
+    return phenotype_map.get(pheno, pheno)
+
 def create_pdf_report(
     filename,
     genes,
@@ -601,14 +617,14 @@ def create_pdf_report(
     # --- Gene Metabolism Table ---
     pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
     pdf.set_font("Courier", size=8)
-    col_widths = [28, 34, 38, 70]
-    headers = ["Gene", "Genotype Phenotype", "Functional Phenotype", "Caused by"]
+    col_widths = [28, 18, 18, 70]  # Genotype and Functional cols are now tighter for short forms
+    headers = ["Gene", "Genotype", "Functional", "Caused by"]
     for i, h in enumerate(headers):
         pdf.cell(col_widths[i], 8, clean_text(h), border=1, align='C')
     pdf.ln()
     for gene in gene_state:
-        genotype = gene_state[gene]["genotype"]
-        func = gene_state[gene]["functional"]
+        genotype = short_pheno(gene_state[gene]["genotype"])
+        func = short_pheno(gene_state[gene]["functional"])
         caused_by = ", ".join(gene_state[gene]["caused_by"])
         pdf.cell(col_widths[0], 8, clean_text(gene), border=1)
         pdf.cell(col_widths[1], 8, clean_text(genotype), border=1)
