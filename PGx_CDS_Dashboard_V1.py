@@ -634,6 +634,10 @@ def create_pdf_report(
         pdf.set_xy(x + col_widths[3], y)
         pdf.ln()
     pdf.set_font("Arial", size=12)
+    pdf.set_font("Arial", size=9, style="I")
+    pdf.ln(2)
+    pdf.cell(0, 8, clean_text("Legend: NM = Normal Metabolizer, IM = Intermediate Metabolizer, UM = Ultra-rapid Metabolizer, PM = Poor Metabolizer, DF = Decreased Function, IR = Increased Risk, Pos = Positive, Neg = Negative, NR = Not Reported"), ln=1)
+    pdf.set_font("Arial", size=12)
 
     # --- Recommendations & Risks ---
     pdf.ln(2)
