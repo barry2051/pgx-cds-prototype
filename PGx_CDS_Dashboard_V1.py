@@ -625,35 +625,34 @@ for gene in gene_state:
     pdf.ln()
 pdf.set_font("Arial", size=12)
 
-    # --- Recommendations & Risks ---
+# --- Recommendations & Risks ---
 pdf.ln(2)
 pdf.cell(0, 10, clean_text("Recommendations & Risks:"), ln=1)
 for _, rec_string, rec in recommendations:
-        pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"), align='L')
+    pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"), align='L')
 
-    # --- Polypharmacy Warnings ---
-    if polypharmacy_warnings:
-        pdf.cell(0, 10, clean_text("Polypharmacy Warnings:"), ln=1)
-        for warning in polypharmacy_warnings:
-            pdf.multi_cell(0, 8, clean_text(warning), align='L')
+# --- Polypharmacy Warnings ---
+if polypharmacy_warnings:
+    pdf.cell(0, 10, clean_text("Polypharmacy Warnings:"), ln=1)
+    for warning in polypharmacy_warnings:
+        pdf.multi_cell(0, 8, clean_text(warning), align='L')
 
-    # --- Flowsheet Prompts ---
-    pdf.cell(0, 10, clean_text("Flowsheet Prompts:"), ln=1)
-    for prompt in flowsheet_all:
-        pdf.multi_cell(0, 8, clean_text(prompt), align='L')
+# --- Flowsheet Prompts ---
+pdf.cell(0, 10, clean_text("Flowsheet Prompts:"), ln=1)
+for prompt in flowsheet_all:
+    pdf.multi_cell(0, 8, clean_text(prompt), align='L')
 
-    # --- Phenoconversion Log ---
-    pdf.cell(0, 10, clean_text("Phenoconversion Log:"), ln=1)
-    for log in phenolog:
-        pdf.multi_cell(0, 8, clean_text(log), align='L')
+# --- Phenoconversion Log ---
+pdf.cell(0, 10, clean_text("Phenoconversion Log:"), ln=1)
+for log in phenolog:
+    pdf.multi_cell(0, 8, clean_text(log), align='L')
 
-    # --- Provider Smart Note ---
-    pdf.cell(0, 10, clean_text("Provider Smart Note:"), ln=1)
-    for line in smartnote_lines:
-        pdf.multi_cell(0, 8, clean_text(line), align='L')
+# --- Provider Smart Note ---
+pdf.cell(0, 10, clean_text("Provider Smart Note:"), ln=1)
+for line in smartnote_lines:
+    pdf.multi_cell(0, 8, clean_text(line), align='L')
 
-    pdf.output(filename)
-
+pdf.output(filename)
 # ----------------------- Streamlit UI -----------------------
 st.set_page_config(page_title="PGx CDS Dashboard", layout="wide")
 st.markdown(
