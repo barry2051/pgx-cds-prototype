@@ -403,11 +403,11 @@ CLINICAL_COMMENTS = {
 
     ("CYP2B6", "Poor Metabolizer", "bupropion"):
         "CYP2B6 Poor Metabolizer status impairs bupropion clearance, increasing plasma concentrations and risk of adverse effects such as agitation, insomnia, or, rarely, seizures. Dose reduction or alternative therapy may be needed. "
-        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1d149db-ad43-4f3f-aef1-fb0395ba4191) | [PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4956af38-182a-4015-a945-67e40bd38772) | [PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
 
     ("CYP2B6", "Intermediate Metabolizer", "bupropion"):
         "Intermediate CYP2B6 activity can moderately reduce bupropion clearance, raising exposure and side effect risk. Monitor for adverse reactions and adjust dose if clinically warranted. "
-        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1d149db-ad43-4f3f-aef1-fb0395ba4191) | [PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4956af38-182a-4015-a945-67e40bd38772) | [PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
 
     ("CYP2C9", "Poor Metabolizer", "phenytoin"):
         "CYP2C9 Poor Metabolizer status leads to significantly reduced phenytoin clearance, increasing toxicity risk (e.g., ataxia, nystagmus, CNS effects). Consider alternative therapy or substantial dose reduction with frequent monitoring. "
@@ -415,19 +415,19 @@ CLINICAL_COMMENTS = {
 
     ("CYP2C9", "Poor Metabolizer", "valproate"):
         "Poor CYP2C9 metabolism can elevate valproate concentrations, increasing risk for hepatotoxicity, thrombocytopenia, and other adverse effects. Dose adjustment and regular monitoring are recommended. "
-        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9e79b42c-38a3-4b2c-a196-a5a1948250e2) | [PharmGKB Valproic Acid](https://www.pharmgkb.org/chemical/PA451846).",
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=82d29262-c72b-48d1-8471-5d582b3496ea) | [PharmGKB Valproic Acid](https://www.pharmgkb.org/chemical/PA451846).",
 
     ("CYP3A5", "Poor Metabolizer", "quetiapine"):
         "Reduced CYP3A5 activity may contribute to higher quetiapine concentrations, especially in patients with decreased CYP3A4. Monitor for increased sedation and adverse effects. "
-        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1e6bea44-57d6-4bac-9328-46e1ee59f83b) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0584dda8-bc3c-48fe-1a90-79608f78e8a0) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
 
     ("CYP3A5", "Intermediate Metabolizer", "quetiapine"):
         "Intermediate CYP3A5 activity can result in modestly increased quetiapine exposure. Monitor for sedation and titrate dose if needed. "
-        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1e6bea44-57d6-4bac-9328-46e1ee59f83b) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0584dda8-bc3c-48fe-1a90-79608f78e8a0) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
 
     ("UGT1A4", "Poor Metabolizer", "lamotrigine"):
         "Poor UGT1A4 metabolism can slow lamotrigine clearance, increasing plasma levels and risk for adverse effects (e.g., dizziness, rash). Consider slower titration and close monitoring. "
-        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a5428249-48c5-4489-bf0b-80ab586277da) | [PharmGKB Lamotrigine](https://www.pharmgkb.org/chemical/PA450164).",
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0b0f0209-edbd-46f3-9bed-762cbea0d737) | [PharmGKB Lamotrigine](https://www.pharmgkb.org/chemical/PA450164).",
 
     ("UGT2B15", "Poor Metabolizer", "lorazepam"):
         "UGT2B15 Poor Metabolizer status reduces lorazepam clearance, increasing risk for prolonged sedation and CNS depression. Consider lower initial dosing and monitor closely, especially in older adults. "
@@ -435,23 +435,23 @@ CLINICAL_COMMENTS = {
 
     ("UGT2B15", "Poor Metabolizer", "oxazepam"):
         "Reduced UGT2B15 activity impairs oxazepam clearance, raising exposure and risk of sedation. Start with lower doses and monitor response. "
-        "[PMID: 15044558](https://pubmed.ncbi.nlm.nih.gov/15044558/) | [PharmGKB Oxazepam](https://www.pharmgkb.org/chemical/PA450427).",
+        "[PMID: 15044558](https://pubmed.ncbi.nlm.nih.gov/15044558/) | [PharmGKB Oxazepam](https://www.pharmgkb.org/chemical/PA450731).",
 
     ("HLA-A*31:01", "Positive", "carbamazepine"):
         "HLA-A*31:01 positivity is strongly associated with increased risk of carbamazepine-induced hypersensitivity reactions, including SJS/TEN. Do NOT initiate carbamazepine; choose alternatives. "
-        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Carbamazepine](https://www.pharmgkb.org/chemical/PA449952).",
+        "[PharmGKB Carbamazepine](https://www.pharmgkb.org/chemical/PA448785).",
 
     ("HLA-A*31:01", "Positive", "oxcarbazepine"):
         "Patients positive for HLA-A*31:01 have higher risk for severe cutaneous adverse reactions with oxcarbazepine. Avoid use and select non-aromatic anticonvulsants. "
-        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Oxcarbazepine](https://www.pharmgkb.org/chemical/PA450083).",
+        "[PharmGKB Oxcarbazepine](https://www.pharmgkb.org/chemical/PA450083).",
 
     ("HLA-B*15:02", "Positive", "carbamazepine"):
         "HLA-B*15:02 is associated with life-threatening SJS/TEN after carbamazepine exposure, especially in patients of Asian ancestry. **Contraindicated**—do not prescribe. "
-        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Carbamazepine](https://www.pharmgkb.org/chemical/PA449952).",
+        "[PharmGKB Carbamazepine](https://www.pharmgkb.org/chemical/PA448785).",
 
     ("HLA-B*15:02", "Positive", "oxcarbazepine"):
         "HLA-B*15:02 carriers are at high risk for Stevens-Johnson Syndrome and toxic epidermal necrolysis with oxcarbazepine. Avoid use—select an alternative agent. "
-        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Oxcarbazepine](https://www.pharmgkb.org/chemical/PA450083).",
+        "[PharmGKB Oxcarbazepine](https://www.pharmgkb.org/chemical/PA450083).",
 
     ("MTHFR", "C/T", "any"):
         "MTHFR variants may impact folate metabolism, but routine clinical action in psychiatric care is not established. Consider folate supplementation only if deficiency suspected or clinically indicated. "
