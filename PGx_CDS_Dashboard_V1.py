@@ -570,8 +570,6 @@ def phenoconvert_genes(genes, meds, log):
 from fpdf import FPDF
 
 def clean_text(text):
-    # Convert any text to a latin-1-safe string for FPDF.
-    # Non-latin1 characters become '?'
     return str(text).encode("latin-1", "replace").decode("latin-1")
 
 def create_pdf_report(
@@ -601,58 +599,55 @@ def create_pdf_report(
     pdf.ln(3)
 
     # --- Gene Metabolism Table ---
-pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
-pdf.set_font("Courier", size=8)
-
-col_widths = [28, 34, 38, 70]
-headers = ["Gene", "Genotype Phenotype", "Functional Phenotype", "Caused by"]
-for i, h in enumerate(headers):
-    pdf.cell(col_widths[i], 8, clean_text(h), border=1, align='C')
-pdf.ln()
-
-for gene in gene_state:
-    genotype = gene_state[gene]["genotype"]
-    func = gene_state[gene]["functional"]
-    caused_by = ", ".join(gene_state[gene]["caused_by"])
-    pdf.cell(col_widths[0], 8, clean_text(gene), border=1)
-    pdf.cell(col_widths[1], 8, clean_text(genotype), border=1)
-    pdf.cell(col_widths[2], 8, clean_text(func), border=1)
-    # For the last column, use multi_cell for possible wrapping:
-    x, y = pdf.get_x(), pdf.get_y()
-    pdf.multi_cell(col_widths[3], 8, clean_text(caused_by), border=1)
-    # Move back to next line (multi_cell moves y, but not x for other cells)
-    pdf.set_xy(x + col_widths[3], y)
+    pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
+    pdf.set_font("Courier", size=8)
+    col_widths = [28, 34, 38, 70]
+    headers = ["Gene", "Genotype Phenotype", "Functional Phenotype", "Caused by"]
+    for i, h in enumerate(headers):
+        pdf.cell(col_widths[i], 8, clean_text(h), border=1, align='C')
     pdf.ln()
-pdf.set_font("Arial", size=12)
+    for gene in gene_state:
+        genotype = gene_state[gene]["genotype"]
+        func = gene_state[gene]["functional"]
+        caused_by = ", ".join(gene_state[gene]["caused_by"])
+        pdf.cell(col_widths[0], 8, clean_text(gene), border=1)
+        pdf.cell(col_widths[1], 8, clean_text(genotype), border=1)
+        pdf.cell(col_widths[2], 8, clean_text(func), border=1)
+        x, y = pdf.get_x(), pdf.get_y()
+        pdf.multi_cell(col_widths[3], 8, clean_text(caused_by), border=1)
+        pdf.set_xy(x + col_widths[3], y)
+        pdf.ln()
+    pdf.set_font("Arial", size=12)
 
-# --- Recommendations & Risks ---
-pdf.ln(2)
-pdf.cell(0, 10, clean_text("Recommendations & Risks:"), ln=1)
-for _, rec_string, rec in recommendations:
-    pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"), align='L')
+    # --- Recommendations & Risks ---
+    pdf.ln(2)
+    pdf.cell(0, 10, clean_text("Recommendations & Risks:"), ln=1)
+    for _, rec_string, rec in recommendations:
+        pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"), align='L')
 
-# --- Polypharmacy Warnings ---
-if polypharmacy_warnings:
-    pdf.cell(0, 10, clean_text("Polypharmacy Warnings:"), ln=1)
-    for warning in polypharmacy_warnings:
-        pdf.multi_cell(0, 8, clean_text(warning), align='L')
+    # --- Polypharmacy Warnings ---
+    if polypharmacy_warnings:
+        pdf.cell(0, 10, clean_text("Polypharmacy Warnings:"), ln=1)
+        for warning in polypharmacy_warnings:
+            pdf.multi_cell(0, 8, clean_text(warning), align='L')
 
-# --- Flowsheet Prompts ---
-pdf.cell(0, 10, clean_text("Flowsheet Prompts:"), ln=1)
-for prompt in flowsheet_all:
-    pdf.multi_cell(0, 8, clean_text(prompt), align='L')
+    # --- Flowsheet Prompts ---
+    pdf.cell(0, 10, clean_text("Flowsheet Prompts:"), ln=1)
+    for prompt in flowsheet_all:
+        pdf.multi_cell(0, 8, clean_text(prompt), align='L')
 
-# --- Phenoconversion Log ---
-pdf.cell(0, 10, clean_text("Phenoconversion Log:"), ln=1)
-for log in phenolog:
-    pdf.multi_cell(0, 8, clean_text(log), align='L')
+    # --- Phenoconversion Log ---
+    pdf.cell(0, 10, clean_text("Phenoconversion Log:"), ln=1)
+    for log in phenolog:
+        pdf.multi_cell(0, 8, clean_text(log), align='L')
 
-# --- Provider Smart Note ---
-pdf.cell(0, 10, clean_text("Provider Smart Note:"), ln=1)
-for line in smartnote_lines:
-    pdf.multi_cell(0, 8, clean_text(line), align='L')
+    # --- Provider Smart Note ---
+    pdf.cell(0, 10, clean_text("Provider Smart Note:"), ln=1)
+    for line in smartnote_lines:
+        pdf.multi_cell(0, 8, clean_text(line), align='L')
 
-pdf.output(filename)
+    pdf.output(filename)
+
 # ----------------------- Streamlit UI -----------------------
 st.set_page_config(page_title="PGx CDS Dashboard", layout="wide")
 st.markdown(
