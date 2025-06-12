@@ -174,7 +174,9 @@ PGX_FACTORS = {
     ("CYP3A4", "Decreased Function", "quetiapine"): 2,
     ("CYP1A2", "Ultra-rapid Metabolizer", "olanzapine"): 0.5,
     ("CYP1A2", "Ultra-rapid Metabolizer", "clozapine"): 0.5,
-
+    ("CYP3A5", "Poor Metabolizer", "quetiapine"): 0.5,
+    ("CYP3A5", "Intermediate Metabolizer", "quetiapine"): 0.8,
+    
     # --- SSRIs/SNRIs ---
     ("CYP2C19", "Ultra-rapid Metabolizer", "citalopram"): 0.4,
     ("CYP2C19", "Poor Metabolizer", "citalopram"): 2,
@@ -188,16 +190,30 @@ PGX_FACTORS = {
     # --- Mood stabilizers ---
     ("CYP2C19", "Poor Metabolizer", "lamotrigine"): 1.2,
     ("CYP2C9", "Poor Metabolizer", "valproate"): 1.4,
-
+    ("CYP2C9", "Poor Metabolizer", "phenytoin"): 2.2,
+    ("CYP2C9", "Intermediate Metabolizer", "phenytoin"): 1.4,
+    ("CYP2C9", "Poor Metabolizer", "valproate"): 1.4,
+    ("UGT1A4", "Poor Metabolizer", "lamotrigine"): 1.3,
+    ("HLA-A*31:01", "Positive", "carbamazepine"): 5,  # strong contraindication
+    ("HLA-A*31:01", "Positive", "oxcarbazepine"): 5,
+    ("HLA-B*15:02", "Positive", "carbamazepine"): 5,  # strong contraindication
+    ("HLA-B*15:02", "Positive", "oxcarbazepine"): 5,
+    
     # --- Anxiolytics/Sleep ---
     ("CYP3A4", "Decreased Function", "alprazolam"): 1.7,
     ("CYP2C19", "Poor Metabolizer", "diazepam"): 1.6,
     ("CYP3A4", "Decreased Function", "zolpidem"): 1.5,
-
-    # --- Pharmacodynamic/Transporters ---
+    ("UGT2B15", "Poor Metabolizer", "lorazepam"): 2.2,
+    ("UGT2B15", "Poor Metabolizer", "oxazepam"): 2.2,
+    
+    # --- Pharmacodynamic/Transporters/Other ---
     ("HTR2A", "A/A", "sertraline"): 0.7,
     ("SLC6A4", "S/S", "sertraline"): 0.7,
     ("COMT", "Val/Val", "bupropion"): 0.8,
+    ("CYP2B6", "Poor Metabolizer", "bupropion"): 2,
+    ("CYP2B6", "Intermediate Metabolizer", "bupropion"): 1.2,
+    ("MTHFR", "C/T", "any"): 0.2,  # placeholder
+    ("MTHFR", "A/C", "any"): 0.2,
 }
 FLOWSHEET_PROMPTS = {
     # --- Antipsychotics ---
@@ -226,6 +242,40 @@ FLOWSHEET_PROMPTS = {
     ("HTR2A", "A/A", "sertraline"): ["Monitor for lack of SSRI effect"],
     ("SLC6A4", "S/S", "sertraline"): ["Assess for SSRI intolerance"],
     ("COMT", "Val/Val", "bupropion"): ["Monitor for low response", "Check for irritability"],
+
+    # --- Expanded Tempus Panel Genes ---
+
+    # CYP2B6 - relevant for bupropion
+    ("CYP2B6", "Poor Metabolizer", "bupropion"): ["Monitor for agitation or insomnia", "Assess for bupropion toxicity (e.g., seizures)"],
+    ("CYP2B6", "Intermediate Metabolizer", "bupropion"): ["Monitor for bupropion side effects","Assess efficacy at usual dose"],
+
+    # CYP2C9 - impacts phenytoin/valproate
+    ("CYP2C9", "Poor Metabolizer", "phenytoin"): ["Monitor phenytoin levels closely","Assess for ataxia or nystagmus"],
+    ("CYP2C9", "Poor Metabolizer", "valproate"): ["Monitor LFTs","Check for GI side effects"],
+
+    # CYP3A5 - less common, but can impact clearance
+    ("CYP3A5", "Poor Metabolizer", "quetiapine"): ["Monitor for sedation","Assess for excessive drowsiness"],
+    ("CYP3A5", "Intermediate Metabolizer", "quetiapine"): ["Monitor for quetiapine side effects","Check for dizziness"],
+
+    # UGT1A4 - impacts lamotrigine
+    ("UGT1A4", "Poor Metabolizer", "lamotrigine"): ["Monitor for increased lamotrigine side effects","Assess for dizziness or diplopia"],
+
+    # UGT2B15 - impacts lorazepam, oxazepam
+    ("UGT2B15", "Poor Metabolizer", "lorazepam"): ["Monitor for excessive sedation","Assess for respiratory depression"],
+    ("UGT2B15", "Poor Metabolizer", "oxazepam"): ["Monitor for prolonged sedation","Check for confusion"],
+
+    # HLA-A*31:01 - SJS/TEN risk
+    ("HLA-A*31:01", "Positive", "carbamazepine"): ["Do NOT administer—risk of severe skin reaction (SJS/TEN)","Alert provider immediately"],
+    ("HLA-A*31:01", "Positive", "oxcarbazepine"): ["Do NOT administer—risk of severe skin reaction (SJS/TEN)","Alert provider immediately"],
+
+    # HLA-B*15:02 - SJS/TEN risk
+    ("HLA-B*15:02", "Positive", "carbamazepine"): ["Do NOT administer—risk of Stevens-Johnson Syndrome","Alert provider immediately"],
+    ("HLA-B*15:02", "Positive", "oxcarbazepine"): ["Do NOT administer—risk of Stevens-Johnson Syndrome","Alert provider immediately"],
+
+    # MTHFR - not directly actionable, but can document
+    ("MTHFR", "C/T", "any"): ["Document folate metabolism variant","Consider folate supplementation if clinically indicated"],
+    ("MTHFR", "A/C", "any"): ["Document folate metabolism variant","Monitor for neuropsychiatric symptoms if relevant"],
+
 }
 
 CLINICAL_COMMENTS = {
@@ -326,7 +376,7 @@ CLINICAL_COMMENTS = {
     ("CYP3A4", "Decreased Function", "buspirone"):
         "Buspirone: While metabolized by CYP3A4, no actionable gene-drug interactions are established in clinical guidelines. "
         "[PharmGKB Buspirone](https://www.pharmgkb.org/chemical/PA448689).",
- ("CYP3A4", "Decreased Function", "clonazepam"):
+    ("CYP3A4", "Decreased Function", "clonazepam"):
         "Clonazepam: CYP3A4 plays a role in metabolism, but no clinically actionable PGx recommendations are currently available. "
         "[PharmGKB Clonazepam](https://www.pharmgkb.org/chemical/PA449050).",
 
@@ -349,6 +399,67 @@ CLINICAL_COMMENTS = {
     ("COMT", "Val/Val", "bupropion"):
         "COMT Val/Val may increase dopamine breakdown, possibly reducing bupropion efficacy in treating depression or ADHD. Clinical significance varies. "
         "[PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
+    # --- Expanded Tempus Panel Clinical Comments ---
+
+    ("CYP2B6", "Poor Metabolizer", "bupropion"):
+        "CYP2B6 Poor Metabolizer status impairs bupropion clearance, increasing plasma concentrations and risk of adverse effects such as agitation, insomnia, or, rarely, seizures. Dose reduction or alternative therapy may be needed. "
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1d149db-ad43-4f3f-aef1-fb0395ba4191) | [PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
+
+    ("CYP2B6", "Intermediate Metabolizer", "bupropion"):
+        "Intermediate CYP2B6 activity can moderately reduce bupropion clearance, raising exposure and side effect risk. Monitor for adverse reactions and adjust dose if clinically warranted. "
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1d149db-ad43-4f3f-aef1-fb0395ba4191) | [PharmGKB Bupropion](https://www.pharmgkb.org/chemical/PA448687).",
+
+    ("CYP2C9", "Poor Metabolizer", "phenytoin"):
+        "CYP2C9 Poor Metabolizer status leads to significantly reduced phenytoin clearance, increasing toxicity risk (e.g., ataxia, nystagmus, CNS effects). Consider alternative therapy or substantial dose reduction with frequent monitoring. "
+        "[CPIC Phenytoin Guideline](https://cpicpgx.org/guidelines/guideline-for-phenytoin/) | [PharmGKB Phenytoin](https://www.pharmgkb.org/chemical/PA451094).",
+
+    ("CYP2C9", "Poor Metabolizer", "valproate"):
+        "Poor CYP2C9 metabolism can elevate valproate concentrations, increasing risk for hepatotoxicity, thrombocytopenia, and other adverse effects. Dose adjustment and regular monitoring are recommended. "
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9e79b42c-38a3-4b2c-a196-a5a1948250e2) | [PharmGKB Valproic Acid](https://www.pharmgkb.org/chemical/PA451846).",
+
+    ("CYP3A5", "Poor Metabolizer", "quetiapine"):
+        "Reduced CYP3A5 activity may contribute to higher quetiapine concentrations, especially in patients with decreased CYP3A4. Monitor for increased sedation and adverse effects. "
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1e6bea44-57d6-4bac-9328-46e1ee59f83b) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
+
+    ("CYP3A5", "Intermediate Metabolizer", "quetiapine"):
+        "Intermediate CYP3A5 activity can result in modestly increased quetiapine exposure. Monitor for sedation and titrate dose if needed. "
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1e6bea44-57d6-4bac-9328-46e1ee59f83b) | [PharmGKB Quetiapine](https://www.pharmgkb.org/chemical/PA451201).",
+
+    ("UGT1A4", "Poor Metabolizer", "lamotrigine"):
+        "Poor UGT1A4 metabolism can slow lamotrigine clearance, increasing plasma levels and risk for adverse effects (e.g., dizziness, rash). Consider slower titration and close monitoring. "
+        "[FDA Label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a5428249-48c5-4489-bf0b-80ab586277da) | [PharmGKB Lamotrigine](https://www.pharmgkb.org/chemical/PA450164).",
+
+    ("UGT2B15", "Poor Metabolizer", "lorazepam"):
+        "UGT2B15 Poor Metabolizer status reduces lorazepam clearance, increasing risk for prolonged sedation and CNS depression. Consider lower initial dosing and monitor closely, especially in older adults. "
+        "[PMID: 15961980](https://pubmed.ncbi.nlm.nih.gov/15961980/) | [PharmGKB Lorazepam](https://www.pharmgkb.org/chemical/PA450267).",
+
+    ("UGT2B15", "Poor Metabolizer", "oxazepam"):
+        "Reduced UGT2B15 activity impairs oxazepam clearance, raising exposure and risk of sedation. Start with lower doses and monitor response. "
+        "[PMID: 15044558](https://pubmed.ncbi.nlm.nih.gov/15044558/) | [PharmGKB Oxazepam](https://www.pharmgkb.org/chemical/PA450427).",
+
+    ("HLA-A*31:01", "Positive", "carbamazepine"):
+        "HLA-A*31:01 positivity is strongly associated with increased risk of carbamazepine-induced hypersensitivity reactions, including SJS/TEN. Do NOT initiate carbamazepine; choose alternatives. "
+        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Carbamazepine](https://www.pharmgkb.org/chemical/PA449952).",
+
+    ("HLA-A*31:01", "Positive", "oxcarbazepine"):
+        "Patients positive for HLA-A*31:01 have higher risk for severe cutaneous adverse reactions with oxcarbazepine. Avoid use and select non-aromatic anticonvulsants. "
+        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Oxcarbazepine](https://www.pharmgkb.org/chemical/PA450083).",
+
+    ("HLA-B*15:02", "Positive", "carbamazepine"):
+        "HLA-B*15:02 is associated with life-threatening SJS/TEN after carbamazepine exposure, especially in patients of Asian ancestry. **Contraindicated**—do not prescribe. "
+        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Carbamazepine](https://www.pharmgkb.org/chemical/PA449952).",
+
+    ("HLA-B*15:02", "Positive", "oxcarbazepine"):
+        "HLA-B*15:02 carriers are at high risk for Stevens-Johnson Syndrome and toxic epidermal necrolysis with oxcarbazepine. Avoid use—select an alternative agent. "
+        "[CPIC Carbamazepine Guideline](https://cpicpgx.org/guidelines/guideline-for-carbamazepine-and-oxcarbazepine/) | [PharmGKB Oxcarbazepine](https://www.pharmgkb.org/chemical/PA450083).",
+
+    ("MTHFR", "C/T", "any"):
+        "MTHFR variants may impact folate metabolism, but routine clinical action in psychiatric care is not established. Consider folate supplementation only if deficiency suspected or clinically indicated. "
+        "[PharmGKB MTHFR](https://www.pharmgkb.org/gene/PA162373209).",
+
+    ("MTHFR", "A/C", "any"):
+        "A/C variant in MTHFR may affect folate pathways; direct pharmacogenomic action for psychiatric medication selection is not currently recommended. "
+        "[PharmGKB MTHFR](https://www.pharmgkb.org/gene/PA162373209).",
 }
 PRIOR_RISKS = {
     "risperidone": 0.1,
@@ -393,24 +504,67 @@ def extract_genes_from_text(text):
     genes = []
     lines = text.splitlines()
     for line in lines:
+        # CYP2D6
         if 'CYP2D6' in line and 'Poor Metabolizer' in line:
             genes.append(('CYP2D6', 'Poor Metabolizer'))
+        # CYP2C19
         if 'CYP2C19' in line and 'Ultra-rapid Metabolizer' in line:
             genes.append(('CYP2C19', 'Ultra-rapid Metabolizer'))
         if 'CYP2C19' in line and 'Poor Metabolizer' in line:
             genes.append(('CYP2C19', 'Poor Metabolizer'))
-        if 'CYP3A4' in line and 'Decreased Function' in line:
-            genes.append(('CYP3A4', 'Decreased Function'))
+        # CYP3A4
+        if 'CYP3A4' in line and ('Decreased Function' in line or 'Poor Metabolizer' in line):
+            genes.append(('CYP3A4', 'Decreased Function'))  # Standardize
+        # CYP1A2
         if 'CYP1A2' in line and 'Ultra-rapid Metabolizer' in line:
             genes.append(('CYP1A2', 'Ultra-rapid Metabolizer'))
-        if 'HTR2A' in line and 'A/A' in line:
-            genes.append(('HTR2A', 'A/A'))
-        if 'SLC6A4' in line and 'S/S' in line:
-            genes.append(('SLC6A4', 'S/S'))
+        # HTR2A
+        if 'HTR2A' in line and ('A/A' in line or 'Increased Risk' in line):
+            genes.append(('HTR2A', 'A/A'))  # Or 'Increased Risk' if that’s your standard
+        # SLC6A4
+        if 'SLC6A4' in line and ('S/S' in line or 'Poor Function' in line):
+            genes.append(('SLC6A4', 'S/S'))  # Or 'Poor Function'
+        # COMT
         if 'COMT' in line and 'Val/Val' in line:
             genes.append(('COMT', 'Val/Val'))
+        # CYP2C9
         if 'CYP2C9' in line and 'Poor Metabolizer' in line:
             genes.append(('CYP2C9', 'Poor Metabolizer'))
+        # CYP2B6
+        if 'CYP2B6' in line and 'Poor Metabolizer' in line:
+            genes.append(('CYP2B6', 'Poor Metabolizer'))
+        if 'CYP2B6' in line and 'Intermediate Metabolizer' in line:
+            genes.append(('CYP2B6', 'Intermediate Metabolizer'))
+        # CYP3A5
+        if 'CYP3A5' in line and 'Poor Metabolizer' in line:
+            genes.append(('CYP3A5', 'Poor Metabolizer'))
+        if 'CYP3A5' in line and 'Intermediate Metabolizer' in line:
+            genes.append(('CYP3A5', 'Intermediate Metabolizer'))
+        # UGT1A4
+        if 'UGT1A4' in line and 'Poor Metabolizer' in line:
+            genes.append(('UGT1A4', 'Poor Metabolizer'))
+        # UGT2B15
+        if 'UGT2B15' in line and 'Poor Metabolizer' in line:
+            genes.append(('UGT2B15', 'Poor Metabolizer'))
+        # HLA-A*31:01
+        if 'HLA-A*31:01' in line and 'Positive' in line:
+            genes.append(('HLA-A*31:01', 'Positive'))
+        if 'HLA-A*31:01' in line and 'Negative' in line:
+            genes.append(('HLA-A*31:01', 'Negative'))
+        # HLA-B*15:02
+        if 'HLA-B*15:02' in line and 'Positive' in line:
+            genes.append(('HLA-B*15:02', 'Positive'))
+        if 'HLA-B*15:02' in line and 'Negative' in line:
+            genes.append(('HLA-B*15:02', 'Negative'))
+        # MTHFR (look for common variants)
+        if 'MTHFR' in line and 'C/T' in line:
+            genes.append(('MTHFR', 'C/T'))
+        if 'MTHFR' in line and 'A/C' in line:
+            genes.append(('MTHFR', 'A/C'))
+        if 'MTHFR' in line and 'T/T' in line:
+            genes.append(('MTHFR', 'T/T'))
+        if 'MTHFR' in line and 'C/C' in line:
+            genes.append(('MTHFR', 'C/C'))
     return genes
 
 def phenoconvert_genes(genes, meds, log):
