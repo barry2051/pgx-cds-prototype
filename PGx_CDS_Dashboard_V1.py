@@ -599,33 +599,56 @@ def create_pdf_report(
     for med in active_meds:
         pdf.cell(0, 8, clean_text(f"- {med}"), ln=1)
     pdf.ln(3)
+
+    # --- Gene Metabolism Table ---
     pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
-    pdf.set_font("Arial", size=10)
-    pdf.cell(0, 8, clean_text("Gene    Genotype Phenotype   Functional Phenotype   Caused by"), ln=1)
+    pdf.set_font("Courier", size=10)
+
+    # Table Header
+    col_widths = [28, 36, 40, 60]  # Adjust these as needed for your data
+    headers = ["Gene", "Genotype Phenotype", "Functional Phenotype", "Caused by"]
+    for i, h in enumerate(headers):
+        pdf.cell(col_widths[i], 8, clean_text(h), border=1, align='C')
+    pdf.ln()
+
+    # Table Rows
     for gene in gene_state:
         genotype = gene_state[gene]["genotype"]
         func = gene_state[gene]["functional"]
         caused_by = ", ".join(gene_state[gene]["caused_by"])
-        line = f"{gene:8} {genotype:18} {func:20} {caused_by}"
-        pdf.cell(0, 8, clean_text(line), ln=1)
-    pdf.set_font("Arial", size=12)
+        row = [gene, genotype, func, caused_by]
+        for i, val in enumerate(row):
+            pdf.cell(col_widths[i], 8, clean_text(val), border=1)
+        pdf.ln()
+    pdf.set_font("Arial", size=12)  # Reset font for rest of the report
+
+    # --- Recommendations & Risks ---
     pdf.ln(2)
     pdf.cell(0, 10, clean_text("Recommendations & Risks:"), ln=1)
     for _, rec_string, rec in recommendations:
-        pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"))
+        pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"), align='L')
+
+    # --- Polypharmacy Warnings ---
     if polypharmacy_warnings:
         pdf.cell(0, 10, clean_text("Polypharmacy Warnings:"), ln=1)
         for warning in polypharmacy_warnings:
-            pdf.multi_cell(0, 8, clean_text(warning))
+            pdf.multi_cell(0, 8, clean_text(warning), align='L')
+
+    # --- Flowsheet Prompts ---
     pdf.cell(0, 10, clean_text("Flowsheet Prompts:"), ln=1)
     for prompt in flowsheet_all:
-        pdf.multi_cell(0, 8, clean_text(prompt))
+        pdf.multi_cell(0, 8, clean_text(prompt), align='L')
+
+    # --- Phenoconversion Log ---
     pdf.cell(0, 10, clean_text("Phenoconversion Log:"), ln=1)
     for log in phenolog:
-        pdf.multi_cell(0, 8, clean_text(log))
+        pdf.multi_cell(0, 8, clean_text(log), align='L')
+
+    # --- Provider Smart Note ---
     pdf.cell(0, 10, clean_text("Provider Smart Note:"), ln=1)
     for line in smartnote_lines:
-        pdf.multi_cell(0, 8, clean_text(line))
+        pdf.multi_cell(0, 8, clean_text(line), align='L')
+
     pdf.output(filename)
 
 # ----------------------- Streamlit UI -----------------------
