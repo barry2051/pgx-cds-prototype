@@ -601,26 +601,30 @@ def create_pdf_report(
     pdf.ln(3)
 
     # --- Gene Metabolism Table ---
-    pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
-    pdf.set_font("Courier", size=10)
+pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
+pdf.set_font("Courier", size=8)
 
-    # Table Header
-    col_widths = [28, 36, 40, 60]  # Adjust these as needed for your data
-    headers = ["Gene", "Genotype Phenotype", "Functional Phenotype", "Caused by"]
-    for i, h in enumerate(headers):
-        pdf.cell(col_widths[i], 8, clean_text(h), border=1, align='C')
+col_widths = [28, 34, 38, 70]
+headers = ["Gene", "Genotype Phenotype", "Functional Phenotype", "Caused by"]
+for i, h in enumerate(headers):
+    pdf.cell(col_widths[i], 8, clean_text(h), border=1, align='C')
+pdf.ln()
+
+for gene in gene_state:
+    genotype = gene_state[gene]["genotype"]
+    func = gene_state[gene]["functional"]
+    caused_by = ", ".join(gene_state[gene]["caused_by"])
+    pdf.cell(col_widths[0], 8, clean_text(gene), border=1)
+    pdf.cell(col_widths[1], 8, clean_text(genotype), border=1)
+    pdf.cell(col_widths[2], 8, clean_text(func), border=1)
+    # For the last column, use multi_cell for possible wrapping:
+    x, y = pdf.get_x(), pdf.get_y()
+    pdf.multi_cell(col_widths[3], 8, clean_text(caused_by), border=1)
+    # Move back to next line (multi_cell moves y, but not x for other cells)
+    pdf.set_xy(x + col_widths[3], y)
     pdf.ln()
 
-    # Table Rows
-    for gene in gene_state:
-        genotype = gene_state[gene]["genotype"]
-        func = gene_state[gene]["functional"]
-        caused_by = ", ".join(gene_state[gene]["caused_by"])
-        row = [gene, genotype, func, caused_by]
-        for i, val in enumerate(row):
-            pdf.cell(col_widths[i], 8, clean_text(val), border=1)
-        pdf.ln()
-    pdf.set_font("Arial", size=12)  # Reset font for rest of the report
+pdf.set_font("Arial", size=12)
 
     # --- Recommendations & Risks ---
     pdf.ln(2)
