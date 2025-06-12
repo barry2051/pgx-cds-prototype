@@ -500,6 +500,8 @@ def parse_pdf(file):
             text += page.extract_text()
     return text
 
+import re
+
 def extract_genes_from_text(text):
     gene_panel = [
         "CYP1A2", "CYP2B6", "CYP2C19", "CYP2C9", "CYP2D6",
@@ -515,14 +517,19 @@ def extract_genes_from_text(text):
     genes = []
     found_genes = set()
     for gene in gene_panel:
+        gene_stripped = gene.replace("*", "")
         for line in text.splitlines():
-            if gene in line:
+            line_stripped = line.replace("*", "")
+            if gene_stripped in line_stripped or (
+                gene.startswith("HLA-A") and "HLA-A" in line and "31:01" in line
+            ) or (
+                gene.startswith("HLA-B") and "HLA-B" in line and "15:02" in line
+            ):
                 for keyword in phenotype_keywords:
                     if keyword in line:
                         genes.append((gene, keyword))
                         found_genes.add(gene)
                         break
-    # Add Not Reported for any missing genes
     for gene in gene_panel:
         if gene not in found_genes:
             genes.append((gene, "Not Reported"))
