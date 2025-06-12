@@ -567,47 +567,65 @@ def phenoconvert_genes(genes, meds, log):
         functional_genes.append((gene, info["functional"]))
     return functional_genes, gene_state
 
-def create_pdf_report(filename, genes, functional_genes, gene_state, active_meds, recommendations, polypharmacy_warnings, flowsheet_all, phenolog, smartnote_lines):
+from fpdf import FPDF
+
+def clean_text(text):
+    # Convert any text to a latin-1-safe string for FPDF.
+    # Non-latin1 characters become '?'
+    return str(text).encode("latin-1", "replace").decode("latin-1")
+
+def create_pdf_report(
+    filename,
+    genes,
+    functional_genes,
+    gene_state,
+    active_meds,
+    recommendations,
+    polypharmacy_warnings,
+    flowsheet_all,
+    phenolog,
+    smartnote_lines
+):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
-    pdf.cell(0, 10, "PGx-Guided Behavioral Health CDS Report", ln=1, align='C')
+    pdf.cell(0, 10, clean_text("PGx-Guided Behavioral Health CDS Report"), ln=1, align='C')
     pdf.set_font("Arial", style="I", size=9)
     pdf.set_font("Arial", size=12)
 
     pdf.ln(5)
-    pdf.cell(0, 10, "Medications Assessed:", ln=1)
+    pdf.cell(0, 10, clean_text("Medications Assessed:"), ln=1)
     for med in active_meds:
-        pdf.cell(0, 8, f"- {med}", ln=1)
+        pdf.cell(0, 8, clean_text(f"- {med}"), ln=1)
     pdf.ln(3)
-    pdf.cell(0, 10, "Gene Metabolism Table:", ln=1)
+    pdf.cell(0, 10, clean_text("Gene Metabolism Table:"), ln=1)
     pdf.set_font("Arial", size=10)
-    pdf.cell(0, 8, "Gene    Genotype Phenotype   Functional Phenotype   Caused by", ln=1)
+    pdf.cell(0, 8, clean_text("Gene    Genotype Phenotype   Functional Phenotype   Caused by"), ln=1)
     for gene in gene_state:
         genotype = gene_state[gene]["genotype"]
         func = gene_state[gene]["functional"]
         caused_by = ", ".join(gene_state[gene]["caused_by"])
         line = f"{gene:8} {genotype:18} {func:20} {caused_by}"
-        pdf.cell(0, 8, line, ln=1)
+        pdf.cell(0, 8, clean_text(line), ln=1)
     pdf.set_font("Arial", size=12)
     pdf.ln(2)
-    pdf.cell(0, 10, "Recommendations & Risks:", ln=1)
+    pdf.cell(0, 10, clean_text("Recommendations & Risks:"), ln=1)
     for _, rec_string, rec in recommendations:
-        pdf.multi_cell(0, 8, f"{rec_string}: {rec}")
+        pdf.multi_cell(0, 8, clean_text(f"{rec_string}: {rec}"))
     if polypharmacy_warnings:
-        pdf.cell(0, 10, "Polypharmacy Warnings:", ln=1)
+        pdf.cell(0, 10, clean_text("Polypharmacy Warnings:"), ln=1)
         for warning in polypharmacy_warnings:
-            pdf.multi_cell(0, 8, warning)
-    pdf.cell(0, 10, "Flowsheet Prompts:", ln=1)
+            pdf.multi_cell(0, 8, clean_text(warning))
+    pdf.cell(0, 10, clean_text("Flowsheet Prompts:"), ln=1)
     for prompt in flowsheet_all:
-        pdf.multi_cell(0, 8, prompt)
-    pdf.cell(0, 10, "Phenoconversion Log:", ln=1)
+        pdf.multi_cell(0, 8, clean_text(prompt))
+    pdf.cell(0, 10, clean_text("Phenoconversion Log:"), ln=1)
     for log in phenolog:
-        pdf.multi_cell(0, 8, log)
-    pdf.cell(0, 10, "Provider Smart Note:", ln=1)
+        pdf.multi_cell(0, 8, clean_text(log))
+    pdf.cell(0, 10, clean_text("Provider Smart Note:"), ln=1)
     for line in smartnote_lines:
-        pdf.multi_cell(0, 8, line)
+        pdf.multi_cell(0, 8, clean_text(line))
     pdf.output(filename)
 
 # ----------------------- Streamlit UI -----------------------
