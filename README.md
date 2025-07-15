@@ -15,7 +15,7 @@ Medication Synonym Handling
 Supports both brand and generic drug names (autocomplete), normalizes inputs for robust CDS logic.
 
 Dynamic CDS Engine
-Calculates Bayesian-style risk estimates for adverse drug reactions, factoring in genotype, active meds, and reported symptoms. Outputs include expanded clinical explanations based on current guidelines.
+Calculates risk estimates for adverse drug reactions, factoring in genotype, active meds, and reported symptoms. Outputs include expanded clinical explanations based on current guidelines.
 
 Phenoconversion Detection
 Adjusts gene function in real-time when medications act as inhibitors or inducers (e.g., paroxetine as a CYP2D6 inhibitor).
