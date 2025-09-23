@@ -965,8 +965,6 @@ with st.expander("Show CDS Logic Snapshot (JSON)"):
         "phenoconversion_log": phenolog
     })
 
-else:
-st.info("Upload a PGx result and enter one or more active medications to begin.")
 
 
 
