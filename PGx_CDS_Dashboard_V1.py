@@ -39,7 +39,11 @@ from PyPDF2 import PdfReader
 import pandas as pd
 from fpdf import FPDF
 import tempfile
+from pathlib import Path
+import base64, io
 
+APP_DIR = Path(__file__).parent
+SAMPLE_PGX_PATH = APP_DIR / "assets" / "sample_reports" / "Sample_PGx_Report_Demo.pdf"
 # ----------------------- Brand/Generic Synonym Mapping -----------------------
 # Add new pairs as needed
 MED_SYNONYMS = {
@@ -587,7 +591,15 @@ phenotype_map = {
 }
 def short_pheno(pheno):
     return phenotype_map.get(pheno, pheno)
-
+def show_pdf_inline(pdf_bytes: bytes, height: int = 520):
+    """Render a PDF inline in Streamlit using a data: URL iframe."""
+    b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+    html = (
+        f'<iframe src="data:application/pdf;base64,{b64}" '
+        f'width="100%" height="{height}" '
+        f'style="border:1px solid #ddd;border-radius:8px;"></iframe>'
+    )
+    st.components.v1.html(html, height=height + 10, scrolling=False)
 def create_pdf_report(
     filename,
     genes,
@@ -684,21 +696,56 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ===================== SIDEBAR (patched) =====================
 with st.sidebar:
     st.title("🩺 PGx CDS Dashboard")
     st.markdown(
-        "Upload a **PGx panel report** and enter psychiatric/anti-anxiety medications for clinical decision support. Powered by Nursing Informatics.")
-    uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
-  
+        "Upload a **PGx panel report** or use the built-in sample. "
+        "Powered by Nursing Informatics."
+    )
+
+    # NEW: toggle to load the bundled sample report
+    use_sample = st.toggle(
+        "Use built-in sample report",
+        value=False,
+        help="Loads the neutral demo PDF that ships with the app."
+    )
+
+    uploaded_file = None
+    sample_bytes = None
+
+    if use_sample:
+        if SAMPLE_PGX_PATH.exists():
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("👀 Preview sample"):
+                    with open(SAMPLE_PGX_PATH, "rb") as f:
+                        sample_bytes = f.read()
+                    show_pdf_inline(sample_bytes, height=520)
+            with col2:
+                with open(SAMPLE_PGX_PATH, "rb") as f:
+                    st.download_button(
+                        label="⬇️ Download sample",
+                        data=f.read(),
+                        file_name="Sample_PGx_Report_Demo.pdf",
+                        mime="application/pdf"
+                    )
+        else:
+            st.error(f"Sample file not found at: {SAMPLE_PGX_PATH}")
+    else:
+        # Original uploader (only shown when NOT using the sample)
+        uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
+
+    # ---- your existing controls (unchanged) ----
     if st.button("Clear All Medications"):
         st.session_state.selected_meds = []
-    
+
     selected_meds = st.multiselect(
         "Select Medications (type to search, select multiple):",
         options=ALL_MEDS_DISPLAY,
         key="selected_meds"
     )
-    # <-- Put the symptom selector OUTSIDE the clear button logic! -->
+
     symptom = st.selectbox(
         "Observed Symptom",
         ["None", "tremor", "agitation", "sedation", "QT prolongation", "toxicity", "orthostatic hypotension"]
@@ -707,9 +754,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("**Work in Process by Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
     st.markdown("_Precision support for behavioral health medication management_")
+# =================== END SIDEBAR (patched) ===================
 
-st.markdown("# 🧬 PGx-Informed CDS Clinical Dashboard")
-st.markdown("#### A dynamic clinical tool for nurse/provider medication safety and personalized care.")
 
 if uploaded_file and selected_meds:
     # Parse and process
@@ -892,4 +938,5 @@ if uploaded_file and selected_meds:
 
 else:
     st.info("Upload a PGx result and enter one or more active medications to begin.")
+
 
