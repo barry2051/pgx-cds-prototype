@@ -2,8 +2,8 @@
 ===============================================================================
 PGx-Guided Behavioral Health CDS Dashboard – Prototype
 
-AUTHOR: Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025)
-DATE: 5/27/25
+AUTHOR: Barry Ohearn, RN, MSN Nursing Informatics
+DATE: 9/23/25
 -------------------------------------------------------------------------------
 DISCLAIMER:
 This software is a prototype for educational and demonstration purposes only.
@@ -42,8 +42,12 @@ import tempfile
 from pathlib import Path
 import base64, io
 
+if "show_sample_preview" not in st.session_state:
+    st.session_state.show_sample_preview = False
+    
 APP_DIR = Path(__file__).parent
 SAMPLE_PGX_PATH = APP_DIR / "assets" / "sample_reports" / "Sample_PGx_Report_Demo.pdf"
+
 # ----------------------- Brand/Generic Synonym Mapping -----------------------
 # Add new pairs as needed
 MED_SYNONYMS = {
@@ -714,24 +718,27 @@ with st.sidebar:
     uploaded_file = None
     sample_bytes = None
 
-    if use_sample:
-        if SAMPLE_PGX_PATH.exists():
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("👀 Preview sample"):
-                    with open(SAMPLE_PGX_PATH, "rb") as f:
-                        sample_bytes = f.read()
-                    show_pdf_inline(sample_bytes, height=520)
-            with col2:
-                with open(SAMPLE_PGX_PATH, "rb") as f:
-                    st.download_button(
-                        label="⬇️ Download sample",
-                        data=f.read(),
-                        file_name="Sample_PGx_Report_Demo.pdf",
-                        mime="application/pdf"
-                    )
-        else:
-            st.error(f"Sample file not found at: {SAMPLE_PGX_PATH}")
+if use_sample:
+    if SAMPLE_PGX_PATH.exists():
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("👀 Preview sample"):
+                st.session_state.show_sample_preview = True
+        with col2:
+            with open(SAMPLE_PGX_PATH, "rb") as f:
+                st.download_button(
+                    label="⬇️ Download sample",
+                    data=f.read(),
+                    file_name="Sample_PGx_Report_Demo.pdf",
+                    mime="application/pdf"
+                )
+
+        # Render preview if user clicked the button (persists across reruns)
+        if st.session_state.show_sample_preview:
+            with open(SAMPLE_PGX_PATH, "rb") as f:
+                show_pdf_inline(f.read(), height=520)
+    else:
+        st.error(f"Sample file not found at: {SAMPLE_PGX_PATH}")
     else:
         # Original uploader (only shown when NOT using the sample)
         uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
@@ -757,13 +764,37 @@ with st.sidebar:
 # =================== END SIDEBAR (patched) ===================
 
 
-if uploaded_file and selected_meds:
-    # Parse and process
-    if uploaded_file.type == "application/pdf":
-        raw_text = parse_pdf(uploaded_file)
-    else:
-        raw_text = uploaded_file.read().decode('utf-8')
-    genes = extract_genes_from_text(raw_text)
+# --- Decide where the PGx text comes from (sample vs uploaded) ---
+raw_text = None
+
+if selected_meds:
+    if use_sample and SAMPLE_PGX_PATH.exists():
+        # Load and parse the bundled sample PDF
+        with open(SAMPLE_PGX_PATH, "rb") as f:
+            pdf_bytes = f.read()
+        try:
+            # If you added the cached bytes parser earlier
+            raw_text = parse_pdf_cached(pdf_bytes)
+        except Exception:
+            # Fallback to existing parser (wrap bytes in a buffer)
+            raw_text = parse_pdf(io.BytesIO(pdf_bytes))
+    elif uploaded_file is not None:
+        if uploaded_file.type == "application/pdf":
+            try:
+                raw_text = parse_pdf_cached(uploaded_file.getvalue())
+            except Exception:
+                raw_text = parse_pdf(uploaded_file)
+        else:
+            raw_text = uploaded_file.read().decode('utf-8', errors='ignore')
+
+# If we still don't have text, keep the friendly banner and stop
+if not raw_text:
+    st.info("Upload a PGx result or toggle the built-in sample, then select one or more medications to begin.")
+    st.stop()
+
+# Now proceed as before
+genes = extract_genes_from_text(raw_text)
+
 
     # Normalize selected meds for CDS logic
     meds_mapped = {}
@@ -938,5 +969,6 @@ if uploaded_file and selected_meds:
 
 else:
     st.info("Upload a PGx result and enter one or more active medications to begin.")
+
 
 
