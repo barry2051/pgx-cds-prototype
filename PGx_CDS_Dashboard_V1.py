@@ -794,179 +794,180 @@ if not raw_text:
 genes = extract_genes_from_text(raw_text)
 
 
-    # Normalize selected meds for CDS logic
-    meds_mapped = {}
-    for disp in selected_meds:
-        generic = disp.split(' ')[0].lower()
-        meds_mapped[generic] = disp
-    active_meds_norm = list(meds_mapped.keys())
-    active_meds_disp = list(meds_mapped.values())
+# Normalize selected meds for CDS logic
+meds_mapped = {}
+for disp in selected_meds:
+    generic = disp.split(' ')[0].lower()
+    meds_mapped[generic] = disp
+active_meds_norm = list(meds_mapped.keys())
+active_meds_disp = list(meds_mapped.values())
 
-    from collections import defaultdict
+from collections import defaultdict
 
-    # --- Class-based Polypharmacy Logic ---
-    class_counter = defaultdict(list)
+# --- Class-based Polypharmacy Logic ---
+class_counter = defaultdict(list)
+for med in active_meds_norm:
+    drug_class = DRUG_CLASSES.get(med)
+    if drug_class:
+        class_counter[drug_class].append(med)
+
+class_polypharmacy = {cls: meds for cls, meds in class_counter.items() if len(meds) > 1}
+
+# ----- Phenoconversion -----
+phenolog = []
+functional_genes, gene_state = phenoconvert_genes(genes, active_meds_norm, phenolog)
+
+# Metrics
+high_risk_count = 0
+polypharmacy_count = 0
+recommendations = []
+smartnote_lines = []
+polypharmacy_warnings = []
+gene_med_tracker = {}
+
+# ----- CDS Logic -----
+shown_recs = set()
+for gene, phenotype in functional_genes:
     for med in active_meds_norm:
-        drug_class = DRUG_CLASSES.get(med)
-        if drug_class:
-            class_counter[drug_class].append(med)
+        key = (gene, phenotype, med)
+        rec_string = f"{gene} ({phenotype}) + {DISPLAY_NAME.get(med, med.capitalize())}"
+        if key in PGX_FACTORS and rec_string not in shown_recs:
+            prior_risk = PRIOR_RISKS.get(med, 0.05)
+            pgx_factor = PGX_FACTORS.get(key, 1)
+            symptom_factor = 2 if symptom in ["tremor", "agitation", "QT prolongation", "toxicity", "orthostatic hypotension"] else 1
+            risk = min(prior_risk * pgx_factor * symptom_factor, 1.0)
+            comment = CLINICAL_COMMENTS.get(key, "")
+            rec = f"Estimated risk: {int(risk*100)}%. [{gene} metabolism: {phenotype}]. {comment}"
+            smartnote_lines.append(f"- {rec_string}: {rec}")
+            shown_recs.add(rec_string)
+            # Polypharmacy
+            enzyme = (gene, phenotype)
+            gene_med_tracker.setdefault(enzyme, set()).add(med)
+            # For metrics
+            if risk > 0.2:
+                high_risk_count += 1
+            recommendations.append((risk, rec_string, rec))
 
-    class_polypharmacy = {cls: meds for cls, meds in class_counter.items() if len(meds) > 1}
+for enzyme, meds in gene_med_tracker.items():
+    meds_set = list(set(meds))
+    if len(meds_set) > 1:
+        polypharmacy_count += 1
+        polypharmacy_warnings.append(
+            f"⚠️ Polypharmacy alert: {', '.join([DISPLAY_NAME.get(m, m.capitalize()) for m in meds_set])} all metabolized by {enzyme[0]}. ↑ risk of drug-drug interaction and toxicity."
+        )
 
-    # ----- Phenoconversion -----
-    phenolog = []
-    functional_genes, gene_state = phenoconvert_genes(genes, active_meds_norm, phenolog)
+# ----- Dashboard Metrics -----
+colA, colB, colC = st.columns(3)
+colA.metric("🔴 High-Risk Findings", high_risk_count)
+colB.metric("🟡 Polypharmacy Alerts", polypharmacy_count)
+colC.metric("🧬 Markers Detected", len(set(genes)))
 
-    # Metrics
-    high_risk_count = 0
-    polypharmacy_count = 0
-    recommendations = []
-    smartnote_lines = []
-    polypharmacy_warnings = []
-    gene_med_tracker = {}
+st.markdown("---")
 
-    # ----- CDS Logic -----
-    shown_recs = set()
-    for gene, phenotype in functional_genes:
-        for med in active_meds_norm:
-            key = (gene, phenotype, med)
-            rec_string = f"{gene} ({phenotype}) + {DISPLAY_NAME.get(med, med.capitalize())}"
-            if key in PGX_FACTORS and rec_string not in shown_recs:
-                prior_risk = PRIOR_RISKS.get(med, 0.05)
-                pgx_factor = PGX_FACTORS.get(key, 1)
-                symptom_factor = 2 if symptom in ["tremor", "agitation", "QT prolongation", "toxicity", "orthostatic hypotension"] else 1
-                risk = min(prior_risk * pgx_factor * symptom_factor, 1.0)
-                comment = CLINICAL_COMMENTS.get(key, "")
-                rec = f"Estimated risk: {int(risk*100)}%. [{gene} metabolism: {phenotype}]. {comment}"
-                smartnote_lines.append(f"- {rec_string}: {rec}")
-                shown_recs.add(rec_string)
-                # Polypharmacy
-                enzyme = (gene, phenotype)
-                gene_med_tracker.setdefault(enzyme, set()).add(med)
-                # For metrics
-                if risk > 0.2:
-                    high_risk_count += 1
-                recommendations.append((risk, rec_string, rec))
+# ----- Main Layout -----
+left_col, right_col = st.columns([1.2, 2])
 
-    for enzyme, meds in gene_med_tracker.items():
-        meds_set = list(set(meds))
-        if len(meds_set) > 1:
-            polypharmacy_count += 1
-            polypharmacy_warnings.append(
-                f"⚠️ Polypharmacy alert: {', '.join([DISPLAY_NAME.get(m, m.capitalize()) for m in meds_set])} all metabolized by {enzyme[0]}. ↑ risk of drug-drug interaction and toxicity."
-            )
-
-    # ----- Dashboard Metrics -----
-    colA, colB, colC = st.columns(3)
-    colA.metric("🔴 High-Risk Findings", high_risk_count)
-    colB.metric("🟡 Polypharmacy Alerts", polypharmacy_count)
-    colC.metric("🧬 Markers Detected", len(set(genes)))
-
-    st.markdown("---")
-
-    # ----- Main Layout -----
-    left_col, right_col = st.columns([1.2, 2])
-
-    with left_col:
-        st.subheader("🧬 Gene Metabolism Table")
-        if genes:
-            df = pd.DataFrame([
-                {
-                    "Gene": gene,
-                    "Genotype Phenotype": gene_state[gene]["genotype"],
-                    "Functional Phenotype": gene_state[gene]["functional"],
-                    "Caused by Drugs": ", ".join(gene_state[gene]["caused_by"])
-                } for gene in gene_state
-            ])
-            st.dataframe(df, hide_index=True)
-        else:
-            st.info("No recognized gene/phenotype pairs found.")
-        st.subheader("💊 Medication List")
-        for med in active_meds_disp:
-            st.markdown(f"- **{med}**")
-
-    with right_col:
-        st.subheader("🔎 Recommendations & Risks")
-        if recommendations:
-            for risk, rec_string, rec in sorted(recommendations, key=lambda x: -x[0]):
-                if risk > 0.2:
-                    st.error(f"⚠️ {rec_string}:")
-                    st.markdown(rec, unsafe_allow_html=True)
-                else:
-                    st.info(f"{rec_string}:")
-                    st.markdown(rec, unsafe_allow_html=True)
-        else:
-            st.info("No specific recommendations based on current rules.")
-        if polypharmacy_warnings:
-            for warning in polypharmacy_warnings:
-                st.warning(warning)
-       
-        # --- Class-based polypharmacy alerts ---
-        if class_polypharmacy:
-            for cls, meds in class_polypharmacy.items():
-                med_names = [DISPLAY_NAME.get(m, m.capitalize()) for m in meds]
-                st.warning(
-                    f"⚠️ Multiple {cls}s selected: {', '.join(med_names)}. "
-                    "Increased risk of additive side effects, interactions, and toxicity. "
-                    "Review the combination carefully."
-            )        
-        with st.expander("📋 Dynamic Flowsheet Prompts"):
-            flowsheet_all = set()
-            for gene, phenotype in functional_genes:
-                for med in active_meds_norm:
-                    prompts = FLOWSHEET_PROMPTS.get((gene, phenotype, med), [])
-                    for prompt in prompts:
-                        flowsheet_all.add(f"{DISPLAY_NAME.get(med, med.capitalize())}: {prompt}")
-            if flowsheet_all:
-                for prompt in sorted(flowsheet_all):
-                    st.write(f"- {prompt}")
-            else:
-                st.write("No special prompts for these combinations.")
-        with st.expander("🧪 Phenoconversion Log"):
-            if phenolog:
-                for log in phenolog:
-                    st.write(f"- {log}")
-            else:
-                st.write("No phenotype adjustments by inhibitors/inducers.")
-
-    st.markdown("---")
-
-    st.subheader("📝 Provider Smart Note (Copy to Chart)")
-    if smartnote_lines:
-        st.code('\n'.join(smartnote_lines), language="markdown")
+with left_col:
+    st.subheader("🧬 Gene Metabolism Table")
+    if genes:
+        df = pd.DataFrame([
+            {
+                "Gene": gene,
+                "Genotype Phenotype": gene_state[gene]["genotype"],
+                "Functional Phenotype": gene_state[gene]["functional"],
+                "Caused by Drugs": ", ".join(gene_state[gene]["caused_by"])
+            } for gene in gene_state
+        ])
+        st.dataframe(df, hide_index=True)
     else:
-        st.info("No CDS findings to summarize.")
+        st.info("No recognized gene/phenotype pairs found.")
+    st.subheader("💊 Medication List")
+    for med in active_meds_disp:
+        st.markdown(f"- **{med}**")
 
-    # ----- PDF Export -----
-    if st.button("Download PDF Summary Report"):
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
-            create_pdf_report(
-                tmp_pdf.name,
-                genes, functional_genes, gene_state, active_meds_disp,
-                recommendations, polypharmacy_warnings, flowsheet_all, phenolog, smartnote_lines
+with right_col:
+    st.subheader("🔎 Recommendations & Risks")
+    if recommendations:
+        for risk, rec_string, rec in sorted(recommendations, key=lambda x: -x[0]):
+            if risk > 0.2:
+                st.error(f"⚠️ {rec_string}:")
+                st.markdown(rec, unsafe_allow_html=True)
+            else:
+                st.info(f"{rec_string}:")
+                st.markdown(rec, unsafe_allow_html=True)
+    else:
+        st.info("No specific recommendations based on current rules.")
+    if polypharmacy_warnings:
+        for warning in polypharmacy_warnings:
+            st.warning(warning)
+   
+    # --- Class-based polypharmacy alerts ---
+    if class_polypharmacy:
+        for cls, meds in class_polypharmacy.items():
+            med_names = [DISPLAY_NAME.get(m, m.capitalize()) for m in meds]
+            st.warning(
+                f"⚠️ Multiple {cls}s selected: {', '.join(med_names)}. "
+                "Increased risk of additive side effects, interactions, and toxicity. "
+                "Review the combination carefully."
+        )        
+    with st.expander("📋 Dynamic Flowsheet Prompts"):
+        flowsheet_all = set()
+        for gene, phenotype in functional_genes:
+            for med in active_meds_norm:
+                prompts = FLOWSHEET_PROMPTS.get((gene, phenotype, med), [])
+                for prompt in prompts:
+                    flowsheet_all.add(f"{DISPLAY_NAME.get(med, med.capitalize())}: {prompt}")
+        if flowsheet_all:
+            for prompt in sorted(flowsheet_all):
+                st.write(f"- {prompt}")
+        else:
+            st.write("No special prompts for these combinations.")
+    with st.expander("🧪 Phenoconversion Log"):
+        if phenolog:
+            for log in phenolog:
+                st.write(f"- {log}")
+        else:
+            st.write("No phenotype adjustments by inhibitors/inducers.")
+
+st.markdown("---")
+
+st.subheader("📝 Provider Smart Note (Copy to Chart)")
+if smartnote_lines:
+    st.code('\n'.join(smartnote_lines), language="markdown")
+else:
+    st.info("No CDS findings to summarize.")
+
+# ----- PDF Export -----
+if st.button("Download PDF Summary Report"):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
+        create_pdf_report(
+            tmp_pdf.name,
+            genes, functional_genes, gene_state, active_meds_disp,
+            recommendations, polypharmacy_warnings, flowsheet_all, phenolog, smartnote_lines
+        )
+        with open(tmp_pdf.name, "rb") as f:
+            st.download_button(
+                label="Click to Download PDF",
+                data=f,
+                file_name="PGx_CDS_Report.pdf",
+                mime="application/pdf"
             )
-            with open(tmp_pdf.name, "rb") as f:
-                st.download_button(
-                    label="Click to Download PDF",
-                    data=f,
-                    file_name="PGx_CDS_Report.pdf",
-                    mime="application/pdf"
-                )
 
-    # ----- CDS Logic JSON -----
-    with st.expander("Show CDS Logic Snapshot (JSON)"):
-        st.json({
-            "genes": genes,
-            "medications": active_meds_disp,
-            "symptom": symptom,
-            "recommendations": [x[1] + ": " + x[2] for x in recommendations],
-            "polypharmacy_warnings": polypharmacy_warnings,
-            "flowsheet_prompts": list(flowsheet_all),
-            "phenoconversion_log": phenolog
-        })
+# ----- CDS Logic JSON -----
+with st.expander("Show CDS Logic Snapshot (JSON)"):
+    st.json({
+        "genes": genes,
+        "medications": active_meds_disp,
+        "symptom": symptom,
+        "recommendations": [x[1] + ": " + x[2] for x in recommendations],
+        "polypharmacy_warnings": polypharmacy_warnings,
+        "flowsheet_prompts": list(flowsheet_all),
+        "phenoconversion_log": phenolog
+    })
 
 else:
-    st.info("Upload a PGx result and enter one or more active medications to begin.")
+st.info("Upload a PGx result and enter one or more active medications to begin.")
+
 
 
 
