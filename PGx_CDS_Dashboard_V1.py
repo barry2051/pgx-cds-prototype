@@ -47,6 +47,7 @@ if "show_sample_preview" not in st.session_state:
     
 APP_DIR = Path(__file__).parent
 SAMPLE_PGX_PATH = APP_DIR / "assets" / "sample_reports" / "Sample_PGx_Report_Demo.pdf"
+RAW_SAMPLE_URL = "https://raw.githubusercontent.com/barry2051/pgx-cds-prototype/main/assets/sample_reports/Sample_PGx_Report_Demo.pdf"
 
 # ----------------------- Brand/Generic Synonym Mapping -----------------------
 # Add new pairs as needed
@@ -720,8 +721,9 @@ with st.sidebar:
         if SAMPLE_PGX_PATH.exists():
             col1, col2 = st.columns(2)
             with col1:
-                if st.button("👀 Preview sample"):
-                    st.session_state.show_sample_preview = True
+                # Opens the PDF in a new tab (Edge-friendly)
+                st.link_button("👀 Preview sample", RAW_SAMPLE_URL)
+
             with col2:
                 with open(SAMPLE_PGX_PATH, "rb") as f:
                     st.download_button(
@@ -749,25 +751,14 @@ with st.sidebar:
 
     symptom = st.selectbox(
         "Observed Symptom",
-        ["None", "tremor", "agitation", "sedation", "QT prolongation", "toxicity", "orthostatic hypotension"]
+        ["None", "tremor", "agitation", "sedation", "QT prolongation", "orthostatic hypotension"]
     )
 
     st.markdown("---")
-    st.markdown("**Work in Process by Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
+    st.markdown("**Work in Process by Barry Ohearn, RN, MSN.**")
     st.markdown("_Precision support for behavioral health medication management_")
 
 # =================== END SIDEBAR (patched) ===================
-
-# ===== Main-area sample preview (wide) =====
-if st.session_state.get("show_sample_preview", False) and SAMPLE_PGX_PATH.exists():
-    st.subheader("Preview: Sample PGx Report")
-    col_a, col_b = st.columns([1, 5])
-    with col_a:
-        if st.button("Hide preview"):
-            st.session_state.show_sample_preview = False
-    with col_b:
-        with open(SAMPLE_PGX_PATH, "rb") as f:
-            show_pdf_inline(f.read(), height=720)
 
 # --- Decide where the PGx text comes from (sample vs uploaded) ---
 raw_text = None
@@ -971,6 +962,7 @@ with st.expander("Show CDS Logic Snapshot (JSON)"):
         "flowsheet_prompts": list(flowsheet_all),
         "phenoconversion_log": phenolog
     })
+
 
 
 
