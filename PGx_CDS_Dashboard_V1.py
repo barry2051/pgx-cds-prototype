@@ -703,12 +703,8 @@ st.markdown(
 # ===================== SIDEBAR (patched) =====================
 with st.sidebar:
     st.title("🩺 PGx CDS Dashboard")
-    st.markdown(
-        "Upload a **PGx panel report** or use the built-in sample. "
-        "Powered by Nursing Informatics."
-    )
+    st.markdown("Upload a **PGx panel report** or use the built-in sample. Powered by Nursing Informatics.")
 
-    # NEW: toggle to load the bundled sample report
     use_sample = st.toggle(
         "Use built-in sample report",
         value=False,
@@ -716,34 +712,35 @@ with st.sidebar:
     )
 
     uploaded_file = None
-    sample_bytes = None
 
-if use_sample:
-    if SAMPLE_PGX_PATH.exists():
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("👀 Preview sample"):
-                st.session_state.show_sample_preview = True
-        with col2:
-            with open(SAMPLE_PGX_PATH, "rb") as f:
-                st.download_button(
-                    label="⬇️ Download sample",
-                    data=f.read(),
-                    file_name="Sample_PGx_Report_Demo.pdf",
-                    mime="application/pdf"
-                )
+    if use_sample:
+        if SAMPLE_PGX_PATH.exists():
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("👀 Preview sample"):
+                    st.session_state.show_sample_preview = True
+            with col2:
+                with open(SAMPLE_PGX_PATH, "rb") as f:
+                    st.download_button(
+                        label="⬇️ Download sample",
+                        data=f.read(),
+                        file_name="Sample_PGx_Report_Demo.pdf",
+                        mime="application/pdf"
+                    )
 
-        # Render preview if user clicked the button (persists across reruns)
-        if st.session_state.show_sample_preview:
-            with open(SAMPLE_PGX_PATH, "rb") as f:
-                show_pdf_inline(f.read(), height=520)
+            # Render preview if user clicked the button (persists across reruns)
+            if st.session_state.show_sample_preview:
+                with open(SAMPLE_PGX_PATH, "rb") as f:
+                    show_pdf_inline(f.read(), height=520)
+
+        else:
+            st.error(f"Sample file not found at: {SAMPLE_PGX_PATH}")
+
     else:
-        st.error(f"Sample file not found at: {SAMPLE_PGX_PATH}")
-    else:
-        # Original uploader (only shown when NOT using the sample)
+        # Only shown when NOT using the sample
         uploaded_file = st.file_uploader("PGx Report (PDF or TXT)", type=["pdf", "txt"])
 
-    # ---- your existing controls (unchanged) ----
+    # (Your existing controls below stay the same)
     if st.button("Clear All Medications"):
         st.session_state.selected_meds = []
 
@@ -761,6 +758,7 @@ if use_sample:
     st.markdown("---")
     st.markdown("**Work in Process by Barry Ohearn, RN, MSN-Informatics Candidate (WGU, 2025).**")
     st.markdown("_Precision support for behavioral health medication management_")
+
 # =================== END SIDEBAR (patched) ===================
 
 
@@ -969,6 +967,7 @@ genes = extract_genes_from_text(raw_text)
 
 else:
     st.info("Upload a PGx result and enter one or more active medications to begin.")
+
 
 
 
