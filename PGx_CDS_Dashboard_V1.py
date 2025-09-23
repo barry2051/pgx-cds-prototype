@@ -41,6 +41,7 @@ from fpdf import FPDF
 import tempfile
 from pathlib import Path
 import base64, io
+from urllib.parse import quote
 
 if "show_sample_preview" not in st.session_state:
     st.session_state.show_sample_preview = False
@@ -721,9 +722,10 @@ with st.sidebar:
         if SAMPLE_PGX_PATH.exists():
             col1, col2 = st.columns(2)
             with col1:
-                # Opens the PDF in a new tab (Edge-friendly)
-                st.link_button("👀 Preview sample", RAW_SAMPLE_URL)
-
+                PDFJS = "https://mozilla.github.io/pdf.js/web/viewer.html?file="
+                viewer_url = PDFJS + quote(RAW_SAMPLE_URL, safe="")
+                # Opens the PDF in a new tab, rendered via pdf.js (Edge-friendly)
+                st.link_button("👀 Preview sample", viewer_url)
             with col2:
                 with open(SAMPLE_PGX_PATH, "rb") as f:
                     st.download_button(
@@ -962,6 +964,7 @@ with st.expander("Show CDS Logic Snapshot (JSON)"):
         "flowsheet_prompts": list(flowsheet_all),
         "phenoconversion_log": phenolog
     })
+
 
 
 
