@@ -712,7 +712,7 @@ with st.sidebar:
     )
    
     if not use_sample and st.session_state.get("show_sample_preview", False):
-    st.session_state.show_sample_preview = False
+        st.session_state.show_sample_preview = False
 
     uploaded_file = None
 
@@ -971,6 +971,7 @@ with st.expander("Show CDS Logic Snapshot (JSON)"):
         "flowsheet_prompts": list(flowsheet_all),
         "phenoconversion_log": phenolog
     })
+
 
 
 
