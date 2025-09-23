@@ -710,6 +710,9 @@ with st.sidebar:
         value=False,
         help="Loads the neutral demo PDF that ships with the app."
     )
+   
+    if not use_sample and st.session_state.get("show_sample_preview", False):
+    st.session_state.show_sample_preview = False
 
     uploaded_file = None
 
@@ -727,12 +730,6 @@ with st.sidebar:
                         file_name="Sample_PGx_Report_Demo.pdf",
                         mime="application/pdf"
                     )
-
-            # Render preview if user clicked the button (persists across reruns)
-            if st.session_state.show_sample_preview:
-                with open(SAMPLE_PGX_PATH, "rb") as f:
-                    show_pdf_inline(f.read(), height=520)
-
         else:
             st.error(f"Sample file not found at: {SAMPLE_PGX_PATH}")
 
@@ -761,6 +758,16 @@ with st.sidebar:
 
 # =================== END SIDEBAR (patched) ===================
 
+# ===== Main-area sample preview (wide) =====
+if st.session_state.get("show_sample_preview", False) and SAMPLE_PGX_PATH.exists():
+    st.subheader("Preview: Sample PGx Report")
+    col_a, col_b = st.columns([1, 5])
+    with col_a:
+        if st.button("Hide preview"):
+            st.session_state.show_sample_preview = False
+    with col_b:
+        with open(SAMPLE_PGX_PATH, "rb") as f:
+            show_pdf_inline(f.read(), height=720)
 
 # --- Decide where the PGx text comes from (sample vs uploaded) ---
 raw_text = None
@@ -964,6 +971,7 @@ with st.expander("Show CDS Logic Snapshot (JSON)"):
         "flowsheet_prompts": list(flowsheet_all),
         "phenoconversion_log": phenolog
     })
+
 
 
 
